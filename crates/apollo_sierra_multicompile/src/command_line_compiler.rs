@@ -57,6 +57,8 @@ impl SierraToCasmCompiler for CommandLineCompiler {
             "--add-pythonic-hints",
             "--max-bytecode-size",
             &self.config.max_casm_bytecode_size.to_string(),
+            "--allowed-libfuncs-list-name",
+            "all",
         ];
         let resource_limits = ResourceLimits::new(None, None, Some(self.config.max_memory_usage));
         let stdout = compile_with_args(
