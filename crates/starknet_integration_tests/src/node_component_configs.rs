@@ -114,7 +114,7 @@ pub fn create_nodes_deployment_units_configs(
             .get_index_of::<ServiceName>(&DistributedNodeServiceName::HttpServer.into())
             .unwrap(),
         services_component_config
-            .get_index_of::<ServiceName>(&DistributedNodeServiceName::L1Provider.into())
+            .get_index_of::<ServiceName>(&DistributedNodeServiceName::L1.into())
             .unwrap(),
         services_component_config
             .get_index_of::<ServiceName>(&DistributedNodeServiceName::StateSync.into())
