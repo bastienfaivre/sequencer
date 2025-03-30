@@ -242,6 +242,7 @@ struct ProposalValidateArguments {
     batcher: Arc<dyn BatcherClient>,
     eth_to_strk_oracle_client: Arc<dyn EthToStrkOracleClientTrait>,
     state_sync_client: SharedStateSyncClient,
+    l1_gas_price_provider_client: Arc<dyn L1GasPriceProviderClient>,
     timeout: Duration,
     batcher_timeout_margin: Duration,
     valid_proposals: Arc<Mutex<HeightToIdToContent>>,
@@ -660,6 +661,7 @@ impl SequencerConsensusContext {
         let batcher = Arc::clone(&self.batcher);
         let eth_to_strk_oracle_client = self.eth_to_strk_oracle_client.clone();
         let state_sync_client = self.state_sync_client.clone();
+        let l1_gas_price_provider_client = self.l1_gas_price_provider.clone();
         let transaction_converter = self.transaction_converter.clone();
         let valid_proposals = Arc::clone(&self.valid_proposals);
         let proposal_id = ProposalId(self.proposal_id);
@@ -674,6 +676,7 @@ impl SequencerConsensusContext {
                     batcher,
                     eth_to_strk_oracle_client,
                     state_sync_client,
+                    l1_gas_price_provider_client,
                     timeout,
                     batcher_timeout_margin,
                     valid_proposals,
@@ -913,6 +916,7 @@ async fn validate_proposal(mut args: ProposalValidateArguments) {
         args.block_info_validation.clone(),
         block_info.clone(),
         args.eth_to_strk_oracle_client,
+        args.l1_gas_price_provider_client,
     )
     .await
     {
@@ -996,6 +1000,7 @@ async fn is_block_info_valid(
     block_info_validation: BlockInfoValidation,
     block_info: ConsensusBlockInfo,
     eth_to_strk_oracle_client: Arc<dyn EthToStrkOracleClientTrait>,
+    l1_gas_price_provider: Arc<dyn L1GasPriceProviderClient>,
 ) -> bool {
     let now: u64 =
         chrono::Utc::now().timestamp().try_into().expect("Failed to convert timestamp to u64");
@@ -1003,8 +1008,20 @@ async fn is_block_info_valid(
     if !(block_info.height == block_info_validation.height
         && block_info.timestamp >= block_info_validation.last_block_timestamp.unwrap_or(0)
         && block_info.timestamp <= now + block_info_validation.block_timestamp_window
-        && block_info.l1_da_mode == block_info_validation.l1_da_mode
-        && block_info.l2_gas_price_fri == u128::from(block_info_validation.l2_gas_price_fri))
+        && block_info.l1_da_mode == block_info_validation.l1_da_mode)
+    {
+        return false;
+    }
+    let gas_prices = l1_gas_price_provider
+        .get_price_info(BlockTimestamp(block_info.timestamp))
+        .await
+        .expect("Failed to get L1 gas price info");
+    let l1_gas_price_wei = gas_prices.base_fee_per_gas;
+    let l1_data_gas_price_wei = gas_prices.blob_fee;
+
+    if !(block_info.l2_gas_price_fri == u128::from(block_info_validation.l2_gas_price_fri)
+        && block_info.l1_gas_price_wei == l1_gas_price_wei
+        && block_info.l1_data_gas_price_wei == l1_data_gas_price_wei)
     {
         return false;
     }
