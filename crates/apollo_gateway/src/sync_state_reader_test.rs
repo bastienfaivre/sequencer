@@ -61,6 +61,7 @@ async fn test_get_block_info() {
         Arc::new(mock_state_sync_client),
         Arc::new(mock_class_manager_client),
         block_number,
+        tokio::runtime::Handle::current(),
     );
     let result = state_sync_reader.get_block_info().unwrap();
 
@@ -116,6 +117,7 @@ async fn test_get_storage_at() {
         Arc::new(mock_state_sync_client),
         Arc::new(mock_class_manager_client),
         block_number,
+        tokio::runtime::Handle::current(),
     );
 
     let result = state_sync_reader.get_storage_at(contract_address, storage_key).unwrap();
@@ -140,6 +142,7 @@ async fn test_get_nonce_at() {
         Arc::new(mock_state_sync_client),
         Arc::new(mock_class_manager_client),
         block_number,
+        tokio::runtime::Handle::current(),
     );
 
     let result = state_sync_reader.get_nonce_at(contract_address).unwrap();
@@ -164,6 +167,7 @@ async fn test_get_class_hash_at() {
         Arc::new(mock_state_sync_client),
         Arc::new(mock_class_manager_client),
         block_number,
+        tokio::runtime::Handle::current(),
     );
 
     let result = state_sync_reader.get_class_hash_at(contract_address).unwrap();
@@ -207,6 +211,7 @@ async fn test_get_compiled_class() {
         Arc::new(mock_state_sync_client),
         Arc::new(mock_class_manager_client),
         block_number,
+        tokio::runtime::Handle::current(),
     );
 
     let result = state_sync_reader.get_compiled_class(class_hash).unwrap();
