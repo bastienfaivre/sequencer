@@ -4,7 +4,7 @@ use apollo_class_manager_types::transaction_converter::{
     TransactionConverter,
     TransactionConverterTrait,
 };
-use apollo_class_manager_types::{EmptyClassManagerClient, SharedClassManagerClient};
+use apollo_class_manager_types::{ClassHashes, EmptyClassManagerClient, MockClassManagerClient};
 use apollo_gateway_types::errors::GatewaySpecError;
 use apollo_gateway_types::gateway_types::{
     DeployAccountGatewayOutput,
@@ -20,6 +20,9 @@ use apollo_mempool_types::communication::{
 use apollo_mempool_types::errors::MempoolError;
 use apollo_mempool_types::mempool_types::{AccountState, AddTransactionArgs};
 use apollo_network_types::network_types::BroadcastedMessageMetadata;
+use apollo_sierra_multicompile::command_line_compiler::CommandLineCompiler;
+use apollo_sierra_multicompile::config::SierraCompilationConfig;
+use apollo_sierra_multicompile::SierraCompiler;
 use apollo_test_utils::{get_rng, GetTestInstance};
 use assert_matches::assert_matches;
 use blockifier::context::ChainInfo;
@@ -27,6 +30,7 @@ use blockifier::test_utils::initial_test_state::fund_account;
 use blockifier_test_utils::cairo_versions::{CairoVersion, RunnableCairo1};
 use blockifier_test_utils::contracts::FeatureContract;
 use mempool_test_utils::starknet_api_test_utils::{
+    contract_class,
     declare_tx,
     generate_deploy_account_with_salt,
     invoke_tx,
@@ -35,6 +39,7 @@ use mempool_test_utils::starknet_api_test_utils::{
 use metrics_exporter_prometheus::PrometheusBuilder;
 use mockall::predicate::eq;
 use rstest::{fixture, rstest};
+use starknet_api::contract_class::ContractClass;
 use starknet_api::core::{CompiledClassHash, ContractAddress, Nonce};
 use starknet_api::rpc_transaction::{
     InternalRpcTransaction,
@@ -89,15 +94,20 @@ fn mock_dependencies(
 ) -> MockDependencies {
     let mock_mempool_client = MockMempoolClient::new();
     // TODO(noamsp): use MockTransactionConverter
-    let class_manager_client = Arc::new(EmptyClassManagerClient);
-    MockDependencies { config, state_reader_factory, mock_mempool_client, class_manager_client }
+    let mock_class_manager_client = MockClassManagerClient::new();
+    MockDependencies {
+        config,
+        state_reader_factory,
+        mock_mempool_client,
+        mock_class_manager_client,
+    }
 }
 
 struct MockDependencies {
     config: GatewayConfig,
     state_reader_factory: TestStateReaderFactory,
     mock_mempool_client: MockMempoolClient,
-    class_manager_client: SharedClassManagerClient,
+    mock_class_manager_client: MockClassManagerClient,
 }
 
 impl MockDependencies {
@@ -108,19 +118,63 @@ impl MockDependencies {
             self.config,
             Arc::new(self.state_reader_factory),
             Arc::new(self.mock_mempool_client),
-            TransactionConverter::new(self.class_manager_client, chain_id),
+            TransactionConverter::new(Arc::new(self.mock_class_manager_client), chain_id),
         )
     }
 
     fn expect_add_tx(&mut self, args: AddTransactionArgsWrapper, result: MempoolClientResult<()>) {
         self.mock_mempool_client.expect_add_tx().once().with(eq(args)).return_once(|_| result);
     }
+
+    /// Setup MockClassManagerClient to expect the addition and retrieval of the test contract
+    /// class. Implementing getters requires compiling the contract class and thus is optional
+    fn setup_class_mock(&mut self, include_getters: bool) {
+        let contract_class = contract_class();
+        let class_hash = contract_class.calculate_class_hash();
+        let class_hash_for_closure = class_hash;
+
+        self.mock_class_manager_client
+            .expect_add_class()
+            .once()
+            .with(eq(contract_class.clone()))
+            .return_once(move |_| {
+                Ok(ClassHashes {
+                    class_hash: class_hash_for_closure,
+                    executable_class_hash: Default::default(),
+                })
+            });
+
+        if include_getters {
+            let compiler_options = SierraCompilationConfig::default();
+            let cmd_compiler = CommandLineCompiler::new(compiler_options);
+            let sierra_compiler = SierraCompiler::new(cmd_compiler);
+
+            let executable: ContractClass = sierra_compiler
+                .compile(contract_class.clone().try_into().unwrap())
+                .unwrap()
+                .0
+                .try_into()
+                .unwrap();
+
+            self.mock_class_manager_client
+                .expect_get_sierra()
+                .once()
+                .with(eq(class_hash))
+                .return_once(move |_| Ok(Some(contract_class)));
+
+            self.mock_class_manager_client
+                .expect_get_executable()
+                .once()
+                .with(eq(class_hash))
+                .return_once(move |_| Ok(Some(executable)));
+        }
+    }
 }
 
 fn create_tx(tx_type: &TransactionType) -> RpcTransaction {
     let cairo_version = CairoVersion::Cairo1(RunnableCairo1::Casm);
     match tx_type {
-        TransactionType::Declare => todo!(),
+        TransactionType::Declare => declare_tx(),
         TransactionType::DeployAccount => generate_deploy_account_with_salt(
             &FeatureContract::AccountWithoutValidations(cairo_version),
             ContractAddressSalt(Felt::ZERO),
@@ -142,8 +196,11 @@ async fn convert_rpc_tx_to_internal(
     mock_dependencies_object: &MockDependencies,
     rpc_tx: RpcTransaction,
 ) -> InternalRpcTransaction {
-    let cloned_mock_dependencies =
+    let mut cloned_mock_dependencies =
         mock_dependencies(mock_dependencies_object.config.clone(), state_reader_factory());
+    if matches!(&rpc_tx, RpcTransaction::Declare(_)) {
+        cloned_mock_dependencies.setup_class_mock(false);
+    }
     let gateway = cloned_mock_dependencies.gateway();
     gateway.transaction_converter.convert_rpc_tx_to_internal_rpc_tx(rpc_tx).await.unwrap()
 }
@@ -179,6 +236,11 @@ async fn convert_rpc_tx_to_internal(
     Ok(()),
     None
 )]
+#[case::successful_deploy_account(
+    TransactionType::Declare,
+    Ok(()),
+    None
+)]
 #[tokio::test]
 async fn test_add_tx(
     mut mock_dependencies: MockDependencies,
@@ -210,6 +272,10 @@ async fn test_add_tx(
         },
         expected_result,
     );
+
+    if tx_type == TransactionType::Declare {
+        mock_dependencies.setup_class_mock(true);
+    }
 
     let gateway = mock_dependencies.gateway();
 
