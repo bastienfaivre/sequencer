@@ -4,12 +4,7 @@ use futures::StreamExt;
 use mempool_test_utils::starknet_api_test_utils::MultiAccountTransactionGenerator;
 use papyrus_network::network_manager::BroadcastTopicChannels;
 use papyrus_protobuf::consensus::{
-    HeightAndRound,
-    ProposalFin,
-    ProposalInit,
-    ProposalPart,
-    StreamMessage,
-    StreamMessageBody,
+    HeightAndRound, ProposalFin, ProposalInit, ProposalPart, StreamMessage, StreamMessageBody,
 };
 use papyrus_storage::test_utils::CHAIN_ID_FOR_TESTS;
 use pretty_assertions::assert_eq;
@@ -22,18 +17,10 @@ use starknet_consensus::types::ValidatorId;
 use starknet_infra_utils::test_utils::TestIdentifier;
 use starknet_integration_tests::flow_test_setup::{FlowSequencerSetup, FlowTestSetup};
 use starknet_integration_tests::utils::{
-    create_deploy_account_tx_and_invoke_tx,
-    create_flow_test_tx_generator,
-    create_funding_txs,
-    create_many_invoke_txs,
-    create_multiple_account_txs,
-    run_test_scenario,
-    test_many_invoke_txs,
+    CreateRpcTxsFn, ExpectedContentId, TestTxHashesFn, UNDEPLOYED_ACCOUNT_ID,
+    create_deploy_account_tx_and_invoke_tx, create_flow_test_tx_generator, create_funding_txs,
+    create_many_invoke_txs, create_multiple_account_txs, run_test_scenario, test_many_invoke_txs,
     test_multiple_account_txs,
-    CreateRpcTxsFn,
-    ExpectedContentId,
-    TestTxHashesFn,
-    UNDEPLOYED_ACCOUNT_ID,
 };
 use starknet_sequencer_infra::trace_util::configure_tracing;
 use tracing::debug;

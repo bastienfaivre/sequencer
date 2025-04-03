@@ -6,7 +6,7 @@ use papyrus_protobuf::sync::DataOrFin;
 use papyrus_storage::body::BodyStorageReader;
 use papyrus_storage::header::HeaderStorageReader;
 use papyrus_storage::state::StateStorageReader;
-use papyrus_test_utils::{get_rng, GetTestInstance};
+use papyrus_test_utils::{GetTestInstance, get_rng};
 use rand::Rng;
 use rand_chacha::ChaCha8Rng;
 use starknet_api::block::{BlockHeaderWithoutHash, BlockNumber};
@@ -16,13 +16,8 @@ use starknet_api::transaction::TransactionHash;
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 
 use crate::client::test_utils::{
-    random_header,
-    run_test,
-    wait_for_marker,
-    Action,
-    DataType,
-    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-    TIMEOUT_FOR_TEST,
+    Action, DataType, SLEEP_DURATION_TO_LET_SYNC_ADVANCE, TIMEOUT_FOR_TEST, random_header,
+    run_test, wait_for_marker,
 };
 
 #[tokio::test]
@@ -33,63 +28,56 @@ async fn receive_block_internally() {
     let transaction_hashes = sync_block.transaction_hashes.clone();
     let state_diff = sync_block.state_diff.clone();
 
-    run_test(
-        HashMap::new(),
-        None,
-        vec![
-            Action::SendInternalBlock(sync_block),
-            Action::RunP2pSync,
-            Action::CheckStorage(Box::new(move |reader| {
-                async move {
-                    wait_for_marker(
-                        DataType::StateDiff,
-                        &reader,
-                        BlockNumber(1),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
-                    wait_for_marker(
-                        DataType::Transaction,
-                        &reader,
-                        BlockNumber(1),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
+    run_test(HashMap::new(), None, vec![
+        Action::SendInternalBlock(sync_block),
+        Action::RunP2pSync,
+        Action::CheckStorage(Box::new(move |reader| {
+            async move {
+                wait_for_marker(
+                    DataType::StateDiff,
+                    &reader,
+                    BlockNumber(1),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
+                wait_for_marker(
+                    DataType::Transaction,
+                    &reader,
+                    BlockNumber(1),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
 
-                    assert_eq!(
-                        reader.begin_ro_txn().unwrap().get_header_marker().unwrap(),
-                        BlockNumber(1)
-                    );
-                    let txn = reader.begin_ro_txn().unwrap();
-                    let block_header = txn.get_block_header(BlockNumber(0)).unwrap();
-                    assert!(block_header.clone().is_some());
-                    assert!(
-                        block_header.clone().unwrap().n_transactions
-                            == Into::<usize>::into(transaction_hashes_len)
-                    );
-                    assert!(block_header.unwrap().state_diff_length.unwrap() == 1);
-                    assert_eq!(
-                        txn.get_block_header(BlockNumber(0))
-                            .unwrap()
-                            .unwrap()
-                            .block_header_without_hash,
-                        block_header_without_hash
-                    );
-                    assert_eq!(txn.get_state_diff(BlockNumber(0)).unwrap().unwrap(), state_diff);
-                    assert_eq!(
-                        txn.get_block_transaction_hashes(BlockNumber(0))
-                            .unwrap()
-                            .unwrap()
-                            .as_slice(),
-                        transaction_hashes.as_slice()
-                    );
-                }
-                .boxed()
-            })),
-        ],
-    )
+                assert_eq!(
+                    reader.begin_ro_txn().unwrap().get_header_marker().unwrap(),
+                    BlockNumber(1)
+                );
+                let txn = reader.begin_ro_txn().unwrap();
+                let block_header = txn.get_block_header(BlockNumber(0)).unwrap();
+                assert!(block_header.clone().is_some());
+                assert!(
+                    block_header.clone().unwrap().n_transactions
+                        == Into::<usize>::into(transaction_hashes_len)
+                );
+                assert!(block_header.unwrap().state_diff_length.unwrap() == 1);
+                assert_eq!(
+                    txn.get_block_header(BlockNumber(0))
+                        .unwrap()
+                        .unwrap()
+                        .block_header_without_hash,
+                    block_header_without_hash
+                );
+                assert_eq!(txn.get_state_diff(BlockNumber(0)).unwrap().unwrap(), state_diff);
+                assert_eq!(
+                    txn.get_block_transaction_hashes(BlockNumber(0)).unwrap().unwrap().as_slice(),
+                    transaction_hashes.as_slice()
+                );
+            }
+            .boxed()
+        })),
+    ])
     .await;
 }
 
@@ -108,73 +96,63 @@ async fn receive_blocks_out_of_order() {
     let transaction_hashes_1 = sync_block_1.transaction_hashes.clone();
     let state_diff_1 = sync_block_1.state_diff.clone();
 
-    run_test(
-        HashMap::new(),
-        None,
-        vec![
-            Action::SendInternalBlock(sync_block_1),
-            Action::SendInternalBlock(sync_block_0),
-            Action::RunP2pSync,
-            Action::CheckStorage(Box::new(move |reader| {
-                async move {
-                    wait_for_marker(
-                        DataType::StateDiff,
-                        &reader,
-                        BlockNumber(2),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
-                    wait_for_marker(
-                        DataType::Transaction,
-                        &reader,
-                        BlockNumber(2),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
+    run_test(HashMap::new(), None, vec![
+        Action::SendInternalBlock(sync_block_1),
+        Action::SendInternalBlock(sync_block_0),
+        Action::RunP2pSync,
+        Action::CheckStorage(Box::new(move |reader| {
+            async move {
+                wait_for_marker(
+                    DataType::StateDiff,
+                    &reader,
+                    BlockNumber(2),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
+                wait_for_marker(
+                    DataType::Transaction,
+                    &reader,
+                    BlockNumber(2),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
 
-                    assert_eq!(
-                        reader.begin_ro_txn().unwrap().get_header_marker().unwrap(),
-                        BlockNumber(2)
-                    );
-                    let txn = reader.begin_ro_txn().unwrap();
-                    // TODO(Eitan): test rest of data types
-                    assert_eq!(
-                        txn.get_block_header(BlockNumber(0))
-                            .unwrap()
-                            .unwrap()
-                            .block_header_without_hash,
-                        block_header_without_hash_0
-                    );
-                    assert_eq!(txn.get_state_diff(BlockNumber(0)).unwrap().unwrap(), state_diff_0);
-                    assert_eq!(
-                        txn.get_block_transaction_hashes(BlockNumber(0))
-                            .unwrap()
-                            .unwrap()
-                            .as_slice(),
-                        transaction_hashes_0.as_slice()
-                    );
-                    assert_eq!(
-                        txn.get_block_header(BlockNumber(1))
-                            .unwrap()
-                            .unwrap()
-                            .block_header_without_hash,
-                        block_header_without_hash_1
-                    );
-                    assert_eq!(txn.get_state_diff(BlockNumber(1)).unwrap().unwrap(), state_diff_1);
-                    assert_eq!(
-                        txn.get_block_transaction_hashes(BlockNumber(1))
-                            .unwrap()
-                            .unwrap()
-                            .as_slice(),
-                        transaction_hashes_1.as_slice()
-                    );
-                }
-                .boxed()
-            })),
-        ],
-    )
+                assert_eq!(
+                    reader.begin_ro_txn().unwrap().get_header_marker().unwrap(),
+                    BlockNumber(2)
+                );
+                let txn = reader.begin_ro_txn().unwrap();
+                // TODO(Eitan): test rest of data types
+                assert_eq!(
+                    txn.get_block_header(BlockNumber(0))
+                        .unwrap()
+                        .unwrap()
+                        .block_header_without_hash,
+                    block_header_without_hash_0
+                );
+                assert_eq!(txn.get_state_diff(BlockNumber(0)).unwrap().unwrap(), state_diff_0);
+                assert_eq!(
+                    txn.get_block_transaction_hashes(BlockNumber(0)).unwrap().unwrap().as_slice(),
+                    transaction_hashes_0.as_slice()
+                );
+                assert_eq!(
+                    txn.get_block_header(BlockNumber(1))
+                        .unwrap()
+                        .unwrap()
+                        .block_header_without_hash,
+                    block_header_without_hash_1
+                );
+                assert_eq!(txn.get_state_diff(BlockNumber(1)).unwrap().unwrap(), state_diff_1);
+                assert_eq!(
+                    txn.get_block_transaction_hashes(BlockNumber(1)).unwrap().unwrap().as_slice(),
+                    transaction_hashes_1.as_slice()
+                );
+            }
+            .boxed()
+        })),
+    ])
     .await;
 }
 
@@ -183,57 +161,53 @@ async fn receive_blocks_first_externally_and_then_internally() {
     let rng = get_rng();
     let sync_block_0 = create_random_sync_block(BlockNumber(0), 1, rng.clone());
     let sync_block_1 = create_random_sync_block(BlockNumber(1), 1, rng);
-    run_test(
-        HashMap::from([(DataType::Header, 2)]),
-        None,
-        vec![
-            Action::RunP2pSync,
-            // We already validate the query content in other tests.
-            Action::ReceiveQuery(Box::new(|_query| ()), DataType::Header),
-            Action::SendHeader(DataOrFin(Some(random_header(
-                &mut get_rng(),
-                BlockNumber(0),
-                None,
-                None,
-            )))),
-            Action::CheckStorage(Box::new(|reader| {
-                async move {
-                    wait_for_marker(
-                        DataType::Header,
-                        &reader,
-                        BlockNumber(1),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
-                    assert_eq!(
-                        BlockNumber(1),
-                        reader.begin_ro_txn().unwrap().get_header_marker().unwrap()
-                    );
-                }
-                .boxed()
-            })),
-            Action::SendInternalBlock(sync_block_0),
-            Action::SendInternalBlock(sync_block_1),
-            Action::CheckStorage(Box::new(|reader| {
-                async move {
-                    wait_for_marker(
-                        DataType::Header,
-                        &reader,
-                        BlockNumber(2),
-                        SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
-                        TIMEOUT_FOR_TEST,
-                    )
-                    .await;
-                    assert_eq!(
-                        BlockNumber(2),
-                        reader.begin_ro_txn().unwrap().get_header_marker().unwrap()
-                    );
-                }
-                .boxed()
-            })),
-        ],
-    )
+    run_test(HashMap::from([(DataType::Header, 2)]), None, vec![
+        Action::RunP2pSync,
+        // We already validate the query content in other tests.
+        Action::ReceiveQuery(Box::new(|_query| ()), DataType::Header),
+        Action::SendHeader(DataOrFin(Some(random_header(
+            &mut get_rng(),
+            BlockNumber(0),
+            None,
+            None,
+        )))),
+        Action::CheckStorage(Box::new(|reader| {
+            async move {
+                wait_for_marker(
+                    DataType::Header,
+                    &reader,
+                    BlockNumber(1),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
+                assert_eq!(
+                    BlockNumber(1),
+                    reader.begin_ro_txn().unwrap().get_header_marker().unwrap()
+                );
+            }
+            .boxed()
+        })),
+        Action::SendInternalBlock(sync_block_0),
+        Action::SendInternalBlock(sync_block_1),
+        Action::CheckStorage(Box::new(|reader| {
+            async move {
+                wait_for_marker(
+                    DataType::Header,
+                    &reader,
+                    BlockNumber(2),
+                    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+                    TIMEOUT_FOR_TEST,
+                )
+                .await;
+                assert_eq!(
+                    BlockNumber(2),
+                    reader.begin_ro_txn().unwrap().get_header_marker().unwrap()
+                );
+            }
+            .boxed()
+        })),
+    ])
     .await;
 }
 

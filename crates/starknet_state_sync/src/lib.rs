@@ -6,8 +6,8 @@ mod test;
 use std::cmp::min;
 
 use async_trait::async_trait;
-use futures::channel::mpsc::{channel, Sender};
 use futures::SinkExt;
+use futures::channel::mpsc::{Sender, channel};
 use papyrus_storage::body::BodyStorageReader;
 use papyrus_storage::compiled_class::CasmStorageReader;
 use papyrus_storage::db::TransactionKind;
@@ -16,7 +16,7 @@ use papyrus_storage::state::{StateReader, StateStorageReader};
 use papyrus_storage::{StorageReader, StorageTxn};
 use starknet_api::block::BlockNumber;
 use starknet_api::contract_class::{ContractClass, SierraVersion};
-use starknet_api::core::{ClassHash, ContractAddress, Nonce, BLOCK_HASH_TABLE_ADDRESS};
+use starknet_api::core::{BLOCK_HASH_TABLE_ADDRESS, ClassHash, ContractAddress, Nonce};
 use starknet_api::state::{StateNumber, StorageKey};
 use starknet_class_manager_types::SharedClassManagerClient;
 use starknet_sequencer_infra::component_definitions::{ComponentRequestHandler, ComponentStarter};

@@ -13,8 +13,7 @@ use starknet_api::transaction::{Transaction, TransactionHash};
 use starknet_core::types::ContractClass as StarknetContractClass;
 
 use crate::state_reader::compile::{
-    legacy_to_contract_class_v0,
-    sierra_to_versioned_contract_class_v1,
+    legacy_to_contract_class_v0, sierra_to_versioned_contract_class_v1,
 };
 use crate::state_reader::errors::{ReexecutionError, ReexecutionResult};
 

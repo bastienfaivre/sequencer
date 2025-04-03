@@ -4,16 +4,10 @@ use blockifier::execution::contract_class::RunnableCompiledClass;
 use blockifier::state::state_api::StateReader;
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractClass;
 use mockall::predicate;
-use papyrus_test_utils::{get_rng, GetTestInstance};
+use papyrus_test_utils::{GetTestInstance, get_rng};
 use starknet_api::block::{
-    BlockHeaderWithoutHash,
-    BlockInfo,
-    BlockNumber,
-    BlockTimestamp,
-    GasPricePerToken,
-    GasPriceVector,
-    GasPrices,
-    NonzeroGasPrice,
+    BlockHeaderWithoutHash, BlockInfo, BlockNumber, BlockTimestamp, GasPricePerToken,
+    GasPriceVector, GasPrices, NonzeroGasPrice,
 };
 use starknet_api::contract_class::{ContractClass, SierraVersion};
 use starknet_api::core::SequencerContractAddress;
@@ -64,34 +58,27 @@ async fn test_get_block_info() {
     );
     let result = state_sync_reader.get_block_info().unwrap();
 
-    assert_eq!(
-        result,
-        BlockInfo {
-            block_number,
-            block_timestamp,
-            sequencer_address,
-            gas_prices: GasPrices {
-                eth_gas_prices: GasPriceVector {
-                    l1_gas_price: NonzeroGasPrice::new_unchecked(l1_gas_price.price_in_wei),
-                    l1_data_gas_price: NonzeroGasPrice::new_unchecked(
-                        l1_data_gas_price.price_in_wei
-                    ),
-                    l2_gas_price: NonzeroGasPrice::new_unchecked(l2_gas_price.price_in_wei),
-                },
-                strk_gas_prices: GasPriceVector {
-                    l1_gas_price: NonzeroGasPrice::new_unchecked(l1_gas_price.price_in_fri),
-                    l1_data_gas_price: NonzeroGasPrice::new_unchecked(
-                        l1_data_gas_price.price_in_fri
-                    ),
-                    l2_gas_price: NonzeroGasPrice::new_unchecked(l2_gas_price.price_in_fri),
-                },
+    assert_eq!(result, BlockInfo {
+        block_number,
+        block_timestamp,
+        sequencer_address,
+        gas_prices: GasPrices {
+            eth_gas_prices: GasPriceVector {
+                l1_gas_price: NonzeroGasPrice::new_unchecked(l1_gas_price.price_in_wei),
+                l1_data_gas_price: NonzeroGasPrice::new_unchecked(l1_data_gas_price.price_in_wei),
+                l2_gas_price: NonzeroGasPrice::new_unchecked(l2_gas_price.price_in_wei),
             },
-            use_kzg_da: match l1_da_mode {
-                L1DataAvailabilityMode::Blob => true,
-                L1DataAvailabilityMode::Calldata => false,
+            strk_gas_prices: GasPriceVector {
+                l1_gas_price: NonzeroGasPrice::new_unchecked(l1_gas_price.price_in_fri),
+                l1_data_gas_price: NonzeroGasPrice::new_unchecked(l1_data_gas_price.price_in_fri),
+                l2_gas_price: NonzeroGasPrice::new_unchecked(l2_gas_price.price_in_fri),
             },
-        }
-    );
+        },
+        use_kzg_da: match l1_da_mode {
+            L1DataAvailabilityMode::Blob => true,
+            L1DataAvailabilityMode::Calldata => false,
+        },
+    });
 }
 
 #[tokio::test]

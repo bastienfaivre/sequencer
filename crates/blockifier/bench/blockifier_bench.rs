@@ -8,11 +8,9 @@
 //! Run the benchmarks using `cargo bench --bench blockifier_bench`.
 
 use blockifier::test_utils::transfers_generator::{
-    RecipientGeneratorType,
-    TransfersGenerator,
-    TransfersGeneratorConfig,
+    RecipientGeneratorType, TransfersGenerator, TransfersGeneratorConfig,
 };
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use starknet_infra_utils::set_global_allocator;
 
 // TODO(Arni): Consider how to run this benchmark both with and without setting the allocator. Maybe

@@ -4,11 +4,7 @@ use starknet_api::state::SierraContractClass;
 use starknet_sierra_multicompile_types::{RawClass, RawExecutableClass};
 
 use crate::class_storage::{
-    create_tmp_dir,
-    ClassHashStorage,
-    ClassHashStorageConfig,
-    ClassStorage,
-    FsClassStorage,
+    ClassHashStorage, ClassHashStorageConfig, ClassStorage, FsClassStorage, create_tmp_dir,
 };
 
 #[cfg(test)]

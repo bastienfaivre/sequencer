@@ -15,22 +15,10 @@ use starknet_api::state::ThinStateDiff;
 use starknet_api::transaction::TransactionHash;
 use starknet_api::{contract_address, nonce, tx_hash};
 use starknet_batcher_types::batcher_types::{
-    DecisionReachedInput,
-    DecisionReachedResponse,
-    GetHeightResponse,
-    GetProposalContent,
-    GetProposalContentInput,
-    GetProposalContentResponse,
-    ProposalCommitment,
-    ProposalId,
-    ProposalStatus,
-    ProposeBlockInput,
-    RevertBlockInput,
-    SendProposalContent,
-    SendProposalContentInput,
-    SendProposalContentResponse,
-    StartHeightInput,
-    ValidateBlockInput,
+    DecisionReachedInput, DecisionReachedResponse, GetHeightResponse, GetProposalContent,
+    GetProposalContentInput, GetProposalContentResponse, ProposalCommitment, ProposalId,
+    ProposalStatus, ProposeBlockInput, RevertBlockInput, SendProposalContent,
+    SendProposalContentInput, SendProposalContentResponse, StartHeightInput, ValidateBlockInput,
 };
 use starknet_batcher_types::errors::BatcherError;
 use starknet_class_manager_types::transaction_converter::TransactionConverter;
@@ -42,31 +30,19 @@ use starknet_mempool_types::mempool_types::CommitBlockArgs;
 use starknet_sequencer_infra::component_client::ClientError;
 use starknet_sequencer_infra::component_definitions::ComponentStarter;
 use starknet_sequencer_metrics::metric_definitions::{
-    BATCHED_TRANSACTIONS,
-    PROPOSAL_ABORTED,
-    PROPOSAL_FAILED,
-    PROPOSAL_STARTED,
-    PROPOSAL_SUCCEEDED,
-    REJECTED_TRANSACTIONS,
-    STORAGE_HEIGHT,
+    BATCHED_TRANSACTIONS, PROPOSAL_ABORTED, PROPOSAL_FAILED, PROPOSAL_STARTED, PROPOSAL_SUCCEEDED,
+    REJECTED_TRANSACTIONS, STORAGE_HEIGHT,
 };
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 
 use crate::batcher::{Batcher, MockBatcherStorageReaderTrait, MockBatcherStorageWriterTrait};
 use crate::block_builder::{
-    AbortSignalSender,
-    BlockBuilderError,
-    BlockBuilderResult,
-    BlockExecutionArtifacts,
-    FailOnErrorCause,
-    MockBlockBuilderFactoryTrait,
+    AbortSignalSender, BlockBuilderError, BlockBuilderResult, BlockExecutionArtifacts,
+    FailOnErrorCause, MockBlockBuilderFactoryTrait,
 };
 use crate::config::BatcherConfig;
 use crate::test_utils::{
-    test_txs,
-    verify_indexed_execution_infos,
-    FakeProposeBlockBuilder,
-    FakeValidateBlockBuilder,
+    FakeProposeBlockBuilder, FakeValidateBlockBuilder, test_txs, verify_indexed_execution_infos,
 };
 
 const INITIAL_HEIGHT: BlockNumber = BlockNumber(3);
@@ -605,10 +581,9 @@ async fn propose_block_full_flow() {
         .get_proposal_content(GetProposalContentInput { proposal_id: PROPOSAL_ID })
         .await
         .unwrap();
-    assert_eq!(
-        commitment,
-        GetProposalContentResponse { content: GetProposalContent::Finished(proposal_commitment()) }
-    );
+    assert_eq!(commitment, GetProposalContentResponse {
+        content: GetProposalContent::Finished(proposal_commitment())
+    });
 
     let exhausted =
         batcher.get_proposal_content(GetProposalContentInput { proposal_id: PROPOSAL_ID }).await;

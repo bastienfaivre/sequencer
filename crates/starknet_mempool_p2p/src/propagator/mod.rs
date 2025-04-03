@@ -6,8 +6,7 @@ use papyrus_network::network_manager::{BroadcastTopicClient, BroadcastTopicClien
 use papyrus_protobuf::mempool::RpcTransactionWrapper;
 use starknet_class_manager_types::transaction_converter::TransactionConverterTrait;
 use starknet_mempool_p2p_types::communication::{
-    MempoolP2pPropagatorRequest,
-    MempoolP2pPropagatorResponse,
+    MempoolP2pPropagatorRequest, MempoolP2pPropagatorResponse,
 };
 use starknet_mempool_p2p_types::errors::MempoolP2pPropagatorError;
 use starknet_sequencer_infra::component_definitions::{ComponentRequestHandler, ComponentStarter};

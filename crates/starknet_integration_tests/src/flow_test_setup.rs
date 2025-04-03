@@ -2,15 +2,13 @@ use std::net::SocketAddr;
 
 use blockifier::context::ChainInfo;
 use mempool_test_utils::starknet_api_test_utils::{
-    AccountTransactionGenerator,
-    MultiAccountTransactionGenerator,
+    AccountTransactionGenerator, MultiAccountTransactionGenerator,
 };
 use papyrus_network::gossipsub_impl::Topic;
-use papyrus_network::network_manager::test_utils::{
-    create_connected_network_configs,
-    network_config_into_broadcast_channels,
-};
 use papyrus_network::network_manager::BroadcastTopicChannels;
+use papyrus_network::network_manager::test_utils::{
+    create_connected_network_configs, network_config_into_broadcast_channels,
+};
 use papyrus_protobuf::consensus::{HeightAndRound, ProposalPart, StreamMessage};
 use papyrus_storage::StorageConfig;
 use starknet_api::rpc_transaction::RpcTransaction;
@@ -35,11 +33,8 @@ use tracing::{debug, instrument};
 use crate::integration_test_setup::NodeExecutionId;
 use crate::state_reader::StorageTestSetup;
 use crate::utils::{
-    create_chain_info,
-    create_consensus_manager_configs_from_network_configs,
-    create_mempool_p2p_configs,
-    create_node_config,
-    create_state_sync_configs,
+    create_chain_info, create_consensus_manager_configs_from_network_configs,
+    create_mempool_p2p_configs, create_node_config, create_state_sync_configs,
     spawn_local_success_recorder,
 };
 

@@ -14,57 +14,29 @@ use futures::channel::{mpsc, oneshot};
 use futures::{FutureExt, SinkExt, StreamExt};
 use papyrus_network::network_manager::{BroadcastTopicClient, BroadcastTopicClientTrait};
 use papyrus_protobuf::consensus::{
-    BlockInfo as ConsensusBlockInfo,
-    HeightAndRound,
-    ProposalFin,
-    ProposalInit,
-    ProposalPart,
-    TransactionBatch,
-    Vote,
-    DEFAULT_VALIDATOR_ID,
+    BlockInfo as ConsensusBlockInfo, DEFAULT_VALIDATOR_ID, HeightAndRound, ProposalFin,
+    ProposalInit, ProposalPart, TransactionBatch, Vote,
 };
 use starknet_api::block::{
-    BlockHash,
-    BlockHashAndNumber,
-    BlockHeaderWithoutHash,
-    BlockNumber,
-    BlockTimestamp,
-    GasPrice,
-    GasPricePerToken,
-    GasPriceVector,
-    GasPrices,
-    NonzeroGasPrice,
+    BlockHash, BlockHashAndNumber, BlockHeaderWithoutHash, BlockNumber, BlockTimestamp, GasPrice,
+    GasPricePerToken, GasPriceVector, GasPrices, NonzeroGasPrice,
 };
 use starknet_api::consensus_transaction::InternalConsensusTransaction;
 use starknet_api::core::{ContractAddress, SequencerContractAddress};
 use starknet_api::data_availability::L1DataAvailabilityMode;
 use starknet_api::transaction::TransactionHash;
 use starknet_batcher_types::batcher_types::{
-    DecisionReachedInput,
-    DecisionReachedResponse,
-    GetProposalContent,
-    GetProposalContentInput,
-    ProposalId,
-    ProposalStatus,
-    ProposeBlockInput,
-    SendProposalContent,
-    SendProposalContentInput,
-    StartHeightInput,
-    ValidateBlockInput,
+    DecisionReachedInput, DecisionReachedResponse, GetProposalContent, GetProposalContentInput,
+    ProposalId, ProposalStatus, ProposeBlockInput, SendProposalContent, SendProposalContentInput,
+    StartHeightInput, ValidateBlockInput,
 };
 use starknet_batcher_types::communication::{BatcherClient, BatcherClientResult};
-use starknet_class_manager_types::transaction_converter::{
-    TransactionConverter,
-    TransactionConverterTrait,
-};
 use starknet_class_manager_types::SharedClassManagerClient;
+use starknet_class_manager_types::transaction_converter::{
+    TransactionConverter, TransactionConverterTrait,
+};
 use starknet_consensus::types::{
-    ConsensusContext,
-    ConsensusError,
-    ContextConfig,
-    ProposalCommitment,
-    Round,
-    ValidatorId,
+    ConsensusContext, ConsensusError, ContextConfig, ProposalCommitment, Round, ValidatorId,
 };
 use starknet_state_sync_types::communication::SharedStateSyncClient;
 use starknet_state_sync_types::state_sync_types::SyncBlock;
@@ -73,7 +45,7 @@ use tokio::task::JoinHandle;
 use tokio::time::Instant;
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::AbortOnDropHandle;
-use tracing::{debug, error, error_span, info, instrument, trace, warn, Instrument};
+use tracing::{Instrument, debug, error, error_span, info, instrument, trace, warn};
 
 use crate::cende::{BlobParameters, CendeContext};
 use crate::fee_market::calculate_next_base_gas_price;
@@ -181,7 +153,6 @@ impl SequencerConsensusContext {
         vote_broadcast_client: BroadcastTopicClient<Vote>,
         cende_ambassador: Arc<dyn CendeContext>,
     ) -> Self {
-        let num_validators = config.num_validators;
         let l1_da_mode = if config.l1_da_mode {
             L1DataAvailabilityMode::Blob
         } else {
@@ -197,8 +168,14 @@ impl SequencerConsensusContext {
             outbound_proposal_sender,
             vote_broadcast_client,
             // TODO(Matan): Set the actual validator IDs (contract addresses).
-            validators: (0..num_validators)
-                .map(|i| ValidatorId::from(DEFAULT_VALIDATOR_ID + i))
+            validators: config
+                .validator_ids
+                .iter()
+                .map(|id| {
+                    let trimmed = id.trim_start_matches("0x");
+                    let value = u64::from_str_radix(trimmed, 16).expect("Invalid hex ID");
+                    ValidatorId::from(value)
+                })
                 .collect(),
             valid_proposals: Arc::new(Mutex::new(HeightToIdToContent::new())),
             proposal_id: 0,

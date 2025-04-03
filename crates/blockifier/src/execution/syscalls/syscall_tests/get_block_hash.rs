@@ -21,7 +21,7 @@ use crate::state::cached_state::CachedState;
 use crate::state::state_api::State;
 use crate::test_utils::dict_state_reader::DictStateReader;
 use crate::test_utils::initial_test_state::test_state;
-use crate::test_utils::{trivial_external_entry_point_new, BALANCE};
+use crate::test_utils::{BALANCE, trivial_external_entry_point_new};
 
 pub fn initialize_state(
     test_contract: FeatureContract,
@@ -65,18 +65,14 @@ fn positive_flow(runnable_version: RunnableCairo1) {
             .accessed_blocks
             .contains(&BlockNumber(block_number.try_into().unwrap()))
     );
-    assert_eq!(
-        call_info.storage_access_tracker.read_block_hash_values,
-        vec![BlockHash(block_hash)]
-    );
+    assert_eq!(call_info.storage_access_tracker.read_block_hash_values, vec![BlockHash(
+        block_hash
+    )]);
 
-    assert_eq!(
-        call_info.execution,
-        CallExecution {
-            gas_consumed: REQUIRED_GAS_GET_BLOCK_HASH_TEST,
-            ..CallExecution::from_retdata(retdata![block_hash])
-        }
-    );
+    assert_eq!(call_info.execution, CallExecution {
+        gas_consumed: REQUIRED_GAS_GET_BLOCK_HASH_TEST,
+        ..CallExecution::from_retdata(retdata![block_hash])
+    });
 }
 
 #[cfg_attr(feature = "cairo_native", test_case(RunnableCairo1::Native;"Native"))]

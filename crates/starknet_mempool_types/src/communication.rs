@@ -10,13 +10,10 @@ use starknet_api::block::NonzeroGasPrice;
 use starknet_api::core::ContractAddress;
 use starknet_api::rpc_transaction::InternalRpcTransaction;
 use starknet_sequencer_infra::component_client::{
-    ClientError,
-    LocalComponentClient,
-    RemoteComponentClient,
+    ClientError, LocalComponentClient, RemoteComponentClient,
 };
 use starknet_sequencer_infra::component_definitions::{
-    ComponentClient,
-    ComponentRequestAndResponseSender,
+    ComponentClient, ComponentRequestAndResponseSender,
 };
 use thiserror::Error;
 

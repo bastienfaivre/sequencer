@@ -15,14 +15,14 @@ use papyrus_config::presentation::get_config_presentation;
 use papyrus_config::validators::config_validate;
 use papyrus_monitoring_gateway::MonitoringServer;
 use papyrus_network::network_manager::NetworkManager;
-use papyrus_network::{network_manager, NetworkConfig};
+use papyrus_network::{NetworkConfig, network_manager};
 use papyrus_p2p_sync::client::{P2pSyncClient, P2pSyncClientChannels};
 use papyrus_p2p_sync::server::{P2pSyncServer, P2pSyncServerChannels};
-use papyrus_p2p_sync::{Protocol, BUFFER_SIZE};
+use papyrus_p2p_sync::{BUFFER_SIZE, Protocol};
 #[cfg(feature = "rpc")]
 use papyrus_rpc::run_server;
 use papyrus_storage::storage_metrics::update_storage_metrics;
-use papyrus_storage::{open_storage, StorageReader, StorageWriter};
+use papyrus_storage::{StorageReader, StorageWriter, open_storage};
 use papyrus_sync::sources::base_layer::EthereumBaseLayerSource;
 use papyrus_sync::sources::central::{CentralError, CentralSource, CentralSourceConfig};
 use papyrus_sync::sources::pending::PendingSource;
@@ -30,14 +30,14 @@ use papyrus_sync::{StateSync as CentralStateSync, SyncConfig as CentralSyncConfi
 use starknet_api::block::{BlockHash, BlockHashAndNumber};
 use starknet_api::felt;
 use starknet_class_manager_types::{EmptyClassManagerClient, SharedClassManagerClient};
-use starknet_client::reader::objects::pending_data::{PendingBlock, PendingBlockOrDeprecated};
 use starknet_client::reader::PendingData;
+use starknet_client::reader::objects::pending_data::{PendingBlock, PendingBlockOrDeprecated};
 use tokio::sync::RwLock;
 use tokio::task::JoinHandle;
 use tracing::metadata::LevelFilter;
-use tracing::{debug_span, error, info, warn, Instrument};
+use tracing::{Instrument, debug_span, error, info, warn};
 use tracing_subscriber::prelude::*;
-use tracing_subscriber::{fmt, EnvFilter};
+use tracing_subscriber::{EnvFilter, fmt};
 
 use crate::config::NodeConfig;
 use crate::version::VERSION_FULL;

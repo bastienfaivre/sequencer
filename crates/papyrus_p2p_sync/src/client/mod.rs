@@ -28,16 +28,11 @@ use futures::{SinkExt as _, Stream};
 use header::HeaderStreamBuilder;
 use papyrus_common::pending_classes::ApiContractClass;
 use papyrus_config::converters::deserialize_milliseconds_to_duration;
-use papyrus_config::dumping::{ser_param, SerializeConfig};
+use papyrus_config::dumping::{SerializeConfig, ser_param};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_network::network_manager::SqmrClientSender;
 use papyrus_protobuf::sync::{
-    ClassQuery,
-    DataOrFin,
-    HeaderQuery,
-    SignedBlockHeader,
-    StateDiffChunk,
-    StateDiffQuery,
+    ClassQuery, DataOrFin, HeaderQuery, SignedBlockHeader, StateDiffChunk, StateDiffQuery,
     TransactionQuery,
 };
 use papyrus_storage::{StorageError, StorageReader, StorageWriter};

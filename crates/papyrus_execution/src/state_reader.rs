@@ -5,9 +5,7 @@ mod state_reader_test;
 use std::cell::Cell;
 
 use blockifier::execution::contract_class::{
-    CompiledClassV0,
-    CompiledClassV1,
-    RunnableCompiledClass,
+    CompiledClassV0, CompiledClassV1, RunnableCompiledClass,
 };
 use blockifier::state::errors::StateError;
 use blockifier::state::state_api::{StateReader as BlockifierStateReader, StateResult};
@@ -21,7 +19,7 @@ use starknet_api::state::{StateNumber, StorageKey};
 use starknet_types_core::felt::Felt;
 
 use crate::execution_utils;
-use crate::execution_utils::{get_contract_class, ExecutionUtilsError};
+use crate::execution_utils::{ExecutionUtilsError, get_contract_class};
 use crate::objects::PendingData;
 
 /// A view into the state at a specific state number.

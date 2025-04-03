@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
-use syn::{parse_macro_input, ExprLit, Ident, ItemFn, ItemTrait, LitBool, LitStr, Meta, TraitItem};
+use quote::{ToTokens, quote};
+use syn::{ExprLit, Ident, ItemFn, ItemTrait, LitBool, LitStr, Meta, TraitItem, parse_macro_input};
 
 /// This macro is a wrapper around the "rpc" macro supplied by the jsonrpsee library that generates
 /// a server and client traits from a given trait definition. The wrapper gets a version id and

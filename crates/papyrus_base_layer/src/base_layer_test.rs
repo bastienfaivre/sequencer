@@ -4,9 +4,9 @@ use starknet_api::block::{BlockHash, BlockHashAndNumber, BlockNumber};
 use starknet_api::felt;
 use url::Url;
 
-use crate::ethereum_base_layer_contract::{EthereumBaseLayerConfig, EthereumBaseLayerContract};
-use crate::test_utils::{anvil, get_test_ethereum_node, DEFAULT_ANVIL_L1_DEPLOYED_ADDRESS};
 use crate::BaseLayerContract;
+use crate::ethereum_base_layer_contract::{EthereumBaseLayerConfig, EthereumBaseLayerContract};
+use crate::test_utils::{DEFAULT_ANVIL_L1_DEPLOYED_ADDRESS, anvil, get_test_ethereum_node};
 
 // TODO(Gilad): move to global test_utils crate and use everywhere instead of relying on the
 // confusing `#[ignore]` api to mark slow tests.

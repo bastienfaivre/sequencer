@@ -1,19 +1,17 @@
 use std::fmt::Display;
 use std::time::Duration;
 
+use futures::SinkExt;
 use futures::channel::mpsc;
 use futures::stream::StreamExt;
-use futures::SinkExt;
-use papyrus_network::network_manager::test_utils::{
-    mock_register_broadcast_topic,
-    MockBroadcastedMessagesSender,
-    TestSubscriberChannels,
-};
 use papyrus_network::network_manager::BroadcastTopicChannels;
+use papyrus_network::network_manager::test_utils::{
+    MockBroadcastedMessagesSender, TestSubscriberChannels, mock_register_broadcast_topic,
+};
 use papyrus_network_types::network_types::BroadcastedMessageMetadata;
 use papyrus_protobuf::consensus::{StreamMessage, StreamMessageBody};
 use papyrus_protobuf::converters::ProtobufConversionError;
-use papyrus_test_utils::{get_rng, GetTestInstance};
+use papyrus_test_utils::{GetTestInstance, get_rng};
 use prost::DecodeError;
 
 use super::{MessageId, StreamHandler};

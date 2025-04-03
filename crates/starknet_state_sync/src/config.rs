@@ -3,14 +3,14 @@ use std::path::PathBuf;
 use std::result;
 
 use apollo_reverts::RevertConfig;
-use papyrus_config::dumping::{append_sub_config_name, ser_optional_sub_config, SerializeConfig};
+use papyrus_config::dumping::{SerializeConfig, append_sub_config_name, ser_optional_sub_config};
 use papyrus_config::{ParamPath, SerializedParam};
 use papyrus_network::NetworkConfig;
 use papyrus_p2p_sync::client::P2pSyncClientConfig;
-use papyrus_storage::db::DbConfig;
 use papyrus_storage::StorageConfig;
-use papyrus_sync::sources::central::CentralSourceConfig;
+use papyrus_storage::db::DbConfig;
 use papyrus_sync::SyncConfig;
+use papyrus_sync::sources::central::CentralSourceConfig;
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidationError};
 

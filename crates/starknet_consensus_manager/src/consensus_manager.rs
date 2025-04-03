@@ -22,9 +22,7 @@ use starknet_infra_utils::type_name::short_type_name;
 use starknet_sequencer_infra::component_definitions::ComponentStarter;
 use starknet_sequencer_infra::errors::ComponentError;
 use starknet_sequencer_metrics::metric_definitions::{
-    CONSENSUS_NUM_CONNECTED_PEERS,
-    CONSENSUS_NUM_RECEIVED_MESSAGES,
-    CONSENSUS_NUM_SENT_MESSAGES,
+    CONSENSUS_NUM_CONNECTED_PEERS, CONSENSUS_NUM_RECEIVED_MESSAGES, CONSENSUS_NUM_SENT_MESSAGES,
 };
 use starknet_state_sync_types::communication::SharedStateSyncClient;
 use tracing::{error, info};
@@ -42,20 +40,10 @@ pub struct ConsensusManager {
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use starknet_batcher_types::batcher_types::{
-    CentralObjects,
-    DecisionReachedInput,
-    DecisionReachedResponse,
-    GetHeightResponse,
-    GetProposalContent,
-    GetProposalContentInput,
-    GetProposalContentResponse,
-    ProposalStatus,
-    ProposeBlockInput,
-    SendProposalContent,
-    SendProposalContentInput,
-    SendProposalContentResponse,
-    StartHeightInput,
-    ValidateBlockInput,
+    CentralObjects, DecisionReachedInput, DecisionReachedResponse, GetHeightResponse,
+    GetProposalContent, GetProposalContentInput, GetProposalContentResponse, ProposalStatus,
+    ProposeBlockInput, SendProposalContent, SendProposalContentInput, SendProposalContentResponse,
+    StartHeightInput, ValidateBlockInput,
 };
 use starknet_batcher_types::communication::{BatcherClient, BatcherClientResult};
 use starknet_state_sync_types::state_sync_types::SyncBlock;

@@ -1,25 +1,14 @@
-use papyrus_test_utils::{get_rng, GetTestInstance};
+use papyrus_test_utils::{GetTestInstance, get_rng};
 use starknet_api::consensus_transaction::ConsensusTransaction;
 use starknet_api::execution_resources::GasAmount;
 use starknet_api::rpc_transaction::{
-    RpcDeclareTransaction,
-    RpcDeclareTransactionV3,
-    RpcDeployAccountTransaction,
-    RpcDeployAccountTransactionV3,
-    RpcInvokeTransaction,
-    RpcInvokeTransactionV3,
-    RpcTransaction,
+    RpcDeclareTransaction, RpcDeclareTransactionV3, RpcDeployAccountTransaction,
+    RpcDeployAccountTransactionV3, RpcInvokeTransaction, RpcInvokeTransactionV3, RpcTransaction,
 };
 
 use crate::consensus::{
-    BlockInfo,
-    ProposalFin,
-    ProposalInit,
-    ProposalPart,
-    StreamMessage,
-    StreamMessageBody,
-    TransactionBatch,
-    Vote,
+    BlockInfo, ProposalFin, ProposalInit, ProposalPart, StreamMessage, StreamMessageBody,
+    TransactionBatch, Vote,
 };
 use crate::converters::test_instances::TestStreamId;
 

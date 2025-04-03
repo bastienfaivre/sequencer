@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
-use clap::{value_parser, Arg, ArgMatches, Command};
-use serde_json::{json, Value};
+use clap::{Arg, ArgMatches, Command, value_parser};
+use serde_json::{Value, json};
 
 use crate::loading::update_config_map;
 use crate::{ConfigError, ParamPath, SerializationType, SerializedParam};
@@ -54,6 +54,7 @@ fn build_args_parser(config_map: &BTreeMap<ParamPath, SerializedParam>) -> Vec<A
             SerializationType::NegativeInteger => clap::value_parser!(i64).into(),
             SerializationType::PositiveInteger => clap::value_parser!(u64).into(),
             SerializationType::String => clap::value_parser!(String),
+            SerializationType::Array => clap::value_parser!(String).into(),
         };
 
         let arg = Arg::new(param_path)
@@ -81,6 +82,14 @@ fn get_arg_by_type(
         SerializationType::NegativeInteger => Ok(json!(arg_match.try_get_one::<i64>(param_path)?)),
         SerializationType::PositiveInteger => Ok(json!(arg_match.try_get_one::<u64>(param_path)?)),
         SerializationType::String => Ok(json!(arg_match.try_get_one::<String>(param_path)?)),
+        SerializationType::Array => {
+            let values = if let Some(value) = arg_match.try_get_one::<String>(param_path)? {
+                value.split(',').map(|s| s.to_string()).collect::<Vec<String>>()
+            } else {
+                Vec::new()
+            };
+            Ok(json!(values))
+        }
     }
 }
 

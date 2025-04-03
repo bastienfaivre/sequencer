@@ -13,64 +13,39 @@ use starknet_api::core::{ContractAddress, Nonce};
 use starknet_api::state::ThinStateDiff;
 use starknet_api::transaction::TransactionHash;
 use starknet_batcher_types::batcher_types::{
-    BatcherResult,
-    CentralObjects,
-    DecisionReachedInput,
-    DecisionReachedResponse,
-    GetHeightResponse,
-    GetProposalContent,
-    GetProposalContentInput,
-    GetProposalContentResponse,
-    ProposalCommitment,
-    ProposalId,
-    ProposalStatus,
-    ProposeBlockInput,
-    RevertBlockInput,
-    SendProposalContent,
-    SendProposalContentInput,
-    SendProposalContentResponse,
-    StartHeightInput,
+    BatcherResult, CentralObjects, DecisionReachedInput, DecisionReachedResponse,
+    GetHeightResponse, GetProposalContent, GetProposalContentInput, GetProposalContentResponse,
+    ProposalCommitment, ProposalId, ProposalStatus, ProposeBlockInput, RevertBlockInput,
+    SendProposalContent, SendProposalContentInput, SendProposalContentResponse, StartHeightInput,
     ValidateBlockInput,
 };
 use starknet_batcher_types::errors::BatcherError;
-use starknet_class_manager_types::transaction_converter::TransactionConverter;
 use starknet_class_manager_types::SharedClassManagerClient;
+use starknet_class_manager_types::transaction_converter::TransactionConverter;
 use starknet_l1_provider_types::errors::{L1ProviderClientError, L1ProviderError};
 use starknet_l1_provider_types::{SessionState, SharedL1ProviderClient};
 use starknet_mempool_types::communication::SharedMempoolClient;
 use starknet_mempool_types::mempool_types::CommitBlockArgs;
 use starknet_sequencer_infra::component_definitions::{
-    default_component_start_fn,
-    ComponentStarter,
+    ComponentStarter, default_component_start_fn,
 };
 use starknet_sequencer_infra::errors::ComponentError;
 use starknet_sequencer_metrics::metric_definitions::{
-    BATCHED_TRANSACTIONS,
-    REJECTED_TRANSACTIONS,
-    STORAGE_HEIGHT,
+    BATCHED_TRANSACTIONS, REJECTED_TRANSACTIONS, STORAGE_HEIGHT,
 };
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 use tokio::sync::Mutex;
-use tracing::{debug, error, info, instrument, trace, Instrument};
+use tracing::{Instrument, debug, error, info, instrument, trace};
 
 use crate::block_builder::{
-    BlockBuilderError,
-    BlockBuilderExecutionParams,
-    BlockBuilderFactory,
-    BlockBuilderFactoryTrait,
-    BlockBuilderTrait,
-    BlockExecutionArtifacts,
-    BlockMetadata,
+    BlockBuilderError, BlockBuilderExecutionParams, BlockBuilderFactory, BlockBuilderFactoryTrait,
+    BlockBuilderTrait, BlockExecutionArtifacts, BlockMetadata,
 };
 use crate::config::BatcherConfig;
-use crate::metrics::{register_metrics, ProposalMetricsHandle};
+use crate::metrics::{ProposalMetricsHandle, register_metrics};
 use crate::transaction_provider::{ProposeTransactionProvider, ValidateTransactionProvider};
 use crate::utils::{
-    deadline_as_instant,
-    proposal_status_from,
-    verify_block_input,
-    ProposalResult,
-    ProposalTask,
+    ProposalResult, ProposalTask, deadline_as_instant, proposal_status_from, verify_block_input,
 };
 
 type OutputStreamReceiver = tokio::sync::mpsc::UnboundedReceiver<InternalConsensusTransaction>;

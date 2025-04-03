@@ -2,14 +2,12 @@ use starknet_api::state::SierraContractClass;
 use starknet_class_manager_types::{ClassHashes, ClassId, ClassManagerError, ClassManagerResult};
 use starknet_sequencer_infra::component_definitions::ComponentStarter;
 use starknet_sierra_multicompile_types::{
-    RawClass,
-    RawExecutableClass,
-    SharedSierraCompilerClient,
+    RawClass, RawExecutableClass, SharedSierraCompilerClient,
 };
 
+use crate::FsClassManager;
 use crate::class_storage::{CachedClassStorage, ClassStorage, FsClassStorage};
 use crate::config::{ClassManagerConfig, FsClassManagerConfig};
-use crate::FsClassManager;
 
 #[cfg(test)]
 #[path = "class_manager_test.rs"]

@@ -19,12 +19,7 @@ use papyrus_storage::test_utils::TestStorageBuilder;
 use papyrus_storage::{StorageConfig, StorageScope, StorageWriter};
 use starknet_api::abi::abi_utils::get_fee_token_var_address;
 use starknet_api::block::{
-    BlockBody,
-    BlockHeader,
-    BlockHeaderWithoutHash,
-    BlockNumber,
-    BlockTimestamp,
-    FeeType,
+    BlockBody, BlockHeader, BlockHeaderWithoutHash, BlockNumber, BlockTimestamp, FeeType,
     GasPricePerToken,
 };
 use starknet_api::contract_class::{ContractClass, SierraVersion};
@@ -32,9 +27,7 @@ use starknet_api::core::{ClassHash, ContractAddress, Nonce, SequencerContractAdd
 use starknet_api::deprecated_contract_class::ContractClass as DeprecatedContractClass;
 use starknet_api::state::{SierraContractClass, StorageKey, ThinStateDiff};
 use starknet_api::test_utils::{
-    CURRENT_BLOCK_TIMESTAMP,
-    DEFAULT_ETH_L1_GAS_PRICE,
-    DEFAULT_STRK_L1_GAS_PRICE,
+    CURRENT_BLOCK_TIMESTAMP, DEFAULT_ETH_L1_GAS_PRICE, DEFAULT_STRK_L1_GAS_PRICE,
     TEST_SEQUENCER_ADDRESS,
 };
 use starknet_api::transaction::fields::Fee;

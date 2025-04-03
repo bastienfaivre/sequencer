@@ -9,21 +9,13 @@ use futures::executor::block_on;
 use futures::future::pending;
 use futures::{FutureExt, SinkExt};
 use lazy_static::lazy_static;
-use papyrus_network::network_manager::test_utils::{
-    mock_register_broadcast_topic,
-    BroadcastNetworkMock,
-    TestSubscriberChannels,
-};
 use papyrus_network::network_manager::BroadcastTopicChannels;
+use papyrus_network::network_manager::test_utils::{
+    BroadcastNetworkMock, TestSubscriberChannels, mock_register_broadcast_topic,
+};
 use papyrus_protobuf::consensus::{
-    BlockInfo,
-    HeightAndRound,
-    ProposalFin,
-    ProposalInit,
-    ProposalPart,
-    StreamMessage,
-    TransactionBatch,
-    Vote,
+    BlockInfo, HeightAndRound, ProposalFin, ProposalInit, ProposalPart, StreamMessage,
+    TransactionBatch, Vote,
 };
 use rstest::rstest;
 use starknet_api::block::{BlockHash, BlockNumber};
@@ -32,26 +24,18 @@ use starknet_api::core::{ChainId, Nonce, StateDiffCommitment};
 use starknet_api::data_availability::L1DataAvailabilityMode;
 use starknet_api::felt;
 use starknet_api::hash::PoseidonHash;
-use starknet_api::test_utils::invoke::{rpc_invoke_tx, InvokeTxArgs};
+use starknet_api::test_utils::invoke::{InvokeTxArgs, rpc_invoke_tx};
 use starknet_batcher_types::batcher_types::{
-    GetProposalContent,
-    GetProposalContentResponse,
-    ProposalCommitment,
-    ProposalId,
-    ProposalStatus,
-    ProposeBlockInput,
-    SendProposalContent,
-    SendProposalContentInput,
-    SendProposalContentResponse,
+    GetProposalContent, GetProposalContentResponse, ProposalCommitment, ProposalId, ProposalStatus,
+    ProposeBlockInput, SendProposalContent, SendProposalContentInput, SendProposalContentResponse,
     ValidateBlockInput,
 };
 use starknet_batcher_types::communication::{BatcherClientError, MockBatcherClient};
 use starknet_batcher_types::errors::BatcherError;
-use starknet_class_manager_types::transaction_converter::{
-    TransactionConverter,
-    TransactionConverterTrait,
-};
 use starknet_class_manager_types::EmptyClassManagerClient;
+use starknet_class_manager_types::transaction_converter::{
+    TransactionConverter, TransactionConverterTrait,
+};
 use starknet_consensus::stream_handler::StreamHandler;
 use starknet_consensus::types::{ConsensusContext, ContextConfig, Round};
 use starknet_state_sync_types::communication::MockStateSyncClient;

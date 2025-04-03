@@ -15,14 +15,10 @@ use starknet_class_manager_types::SharedClassManagerClient;
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 use tracing::{trace, warn};
 
-use super::block_data_stream_builder::{
-    BadPeerError,
-    BlockData,
-    BlockDataStreamBuilder,
-    BlockNumberLimit,
-    ParseDataError,
-};
 use super::P2pSyncClientError;
+use super::block_data_stream_builder::{
+    BadPeerError, BlockData, BlockDataStreamBuilder, BlockNumberLimit, ParseDataError,
+};
 
 impl BlockData for (DeclaredClasses, DeprecatedDeclaredClasses, BlockNumber) {
     fn write_to_storage<'a>(

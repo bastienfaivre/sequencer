@@ -13,13 +13,9 @@ use starknet_state_sync_types::state_sync_types::SyncBlock;
 use tracing::debug;
 
 use super::block_data_stream_builder::{
-    BadPeerError,
-    BlockData,
-    BlockDataStreamBuilder,
-    BlockNumberLimit,
-    ParseDataError,
+    BadPeerError, BlockData, BlockDataStreamBuilder, BlockNumberLimit, ParseDataError,
 };
-use super::{P2pSyncClientError, ALLOWED_SIGNATURES_LENGTH};
+use super::{ALLOWED_SIGNATURES_LENGTH, P2pSyncClientError};
 
 impl BlockData for SignedBlockHeader {
     #[allow(clippy::as_conversions)] // FIXME: use int metrics so `as f64` may be removed.

@@ -6,8 +6,8 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use starknet_api::block::BlockHashAndNumber;
 use starknet_api::core::{ContractAddress, EntryPointSelector, EthAddress, Nonce};
-use starknet_api::transaction::fields::{Calldata, Fee};
 use starknet_api::transaction::L1HandlerTransaction;
+use starknet_api::transaction::fields::{Calldata, Fee};
 
 pub mod constants;
 pub mod ethereum_base_layer_contract;

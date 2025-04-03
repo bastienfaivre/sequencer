@@ -6,12 +6,11 @@ use futures::FutureExt;
 use papyrus_network::gossipsub_impl::Topic;
 use papyrus_network::network_manager::metrics::{BroadcastNetworkMetrics, NetworkMetrics};
 use papyrus_network::network_manager::{BroadcastTopicChannels, NetworkManager};
-use starknet_class_manager_types::transaction_converter::TransactionConverter;
 use starknet_class_manager_types::SharedClassManagerClient;
+use starknet_class_manager_types::transaction_converter::TransactionConverter;
 use starknet_gateway_types::communication::SharedGatewayClient;
 use starknet_sequencer_metrics::metric_definitions::{
-    MEMPOOL_P2P_NUM_CONNECTED_PEERS,
-    MEMPOOL_P2P_NUM_RECEIVED_MESSAGES,
+    MEMPOOL_P2P_NUM_CONNECTED_PEERS, MEMPOOL_P2P_NUM_RECEIVED_MESSAGES,
     MEMPOOL_P2P_NUM_SENT_MESSAGES,
 };
 

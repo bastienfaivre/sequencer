@@ -4,9 +4,9 @@ use std::time::Duration;
 
 use itertools::Itertools;
 use starknet_api::block::BlockNumber;
+use starknet_l1_provider::L1ProviderConfig;
 use starknet_l1_provider::l1_provider::create_l1_provider;
 use starknet_l1_provider::test_utils::FakeL1ProviderClient;
-use starknet_l1_provider::L1ProviderConfig;
 use starknet_l1_provider_types::L1ProviderClient;
 use starknet_sequencer_infra::trace_util::configure_tracing;
 use starknet_state_sync_types::communication::MockStateSyncClient;

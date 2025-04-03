@@ -3,10 +3,8 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use async_trait::async_trait;
 use blockifier::blockifier::config::TransactionExecutorConfig;
 use blockifier::blockifier::transaction_executor::{
-    BlockExecutionSummary,
-    TransactionExecutor,
-    TransactionExecutorError as BlockifierTransactionExecutorError,
-    TransactionExecutorResult,
+    BlockExecutionSummary, TransactionExecutor,
+    TransactionExecutorError as BlockifierTransactionExecutorError, TransactionExecutorResult,
 };
 use blockifier::blockifier_versioned_constants::{VersionedConstants, VersionedConstantsOverrides};
 use blockifier::bouncer::{BouncerConfig, BouncerWeights};
@@ -19,7 +17,7 @@ use blockifier::transaction::transaction_execution::Transaction as BlockifierTra
 use indexmap::IndexMap;
 #[cfg(test)]
 use mockall::automock;
-use papyrus_config::dumping::{append_sub_config_name, ser_param, SerializeConfig};
+use papyrus_config::dumping::{SerializeConfig, append_sub_config_name, ser_param};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_state_reader::papyrus_state::PapyrusReader;
 use papyrus_storage::StorageReader;
@@ -33,12 +31,10 @@ use starknet_api::execution_resources::GasAmount;
 use starknet_api::state::ThinStateDiff;
 use starknet_api::transaction::TransactionHash;
 use starknet_batcher_types::batcher_types::ProposalCommitment;
-use starknet_class_manager_types::transaction_converter::{
-    TransactionConverter,
-    TransactionConverterError,
-    TransactionConverterTrait,
-};
 use starknet_class_manager_types::SharedClassManagerClient;
+use starknet_class_manager_types::transaction_converter::{
+    TransactionConverter, TransactionConverterError, TransactionConverterTrait,
+};
 use thiserror::Error;
 use tracing::{debug, error, info, trace};
 

@@ -1,14 +1,14 @@
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractClass;
 use futures::channel::mpsc::channel;
 use indexmap::IndexMap;
+use papyrus_storage::StorageWriter;
 use papyrus_storage::body::BodyStorageWriter;
 use papyrus_storage::class::ClassStorageWriter;
 use papyrus_storage::compiled_class::CasmStorageWriter;
 use papyrus_storage::header::HeaderStorageWriter;
 use papyrus_storage::state::StateStorageWriter;
 use papyrus_storage::test_utils::get_test_storage;
-use papyrus_storage::StorageWriter;
-use papyrus_test_utils::{get_rng, get_test_block, get_test_state_diff, GetTestInstance};
+use papyrus_test_utils::{GetTestInstance, get_rng, get_test_block, get_test_state_diff};
 use rand_chacha::rand_core::RngCore;
 use starknet_api::block::{Block, BlockHeader, BlockNumber};
 use starknet_api::contract_class::{ContractClass, SierraVersion};
@@ -203,25 +203,18 @@ async fn test_get_compiled_class_deprecated() {
     storage_writer
         .begin_rw_txn()
         .unwrap()
-        .append_state_diff(
-            block_number,
-            starknet_api::state::ThinStateDiff {
-                declared_classes: IndexMap::from([(
-                    cairo1_class_hash,
-                    CompiledClassHash::default(),
-                )]),
-                deprecated_declared_classes: vec![cairo0_class_hash],
-                ..Default::default()
-            },
-        )
+        .append_state_diff(block_number, starknet_api::state::ThinStateDiff {
+            declared_classes: IndexMap::from([(cairo1_class_hash, CompiledClassHash::default())]),
+            deprecated_declared_classes: vec![cairo0_class_hash],
+            ..Default::default()
+        })
         .unwrap()
         .append_casm(&cairo1_class_hash, &cairo1_contract_class)
         .unwrap()
-        .append_classes(
-            block_number,
-            &[(cairo1_class_hash, &sierra_contract_class)],
-            &[(cairo0_class_hash, &cairo0_contract_class)],
-        )
+        .append_classes(block_number, &[(cairo1_class_hash, &sierra_contract_class)], &[(
+            cairo0_class_hash,
+            &cairo0_contract_class,
+        )])
         .unwrap()
         .append_body(block_number, Default::default())
         .unwrap()

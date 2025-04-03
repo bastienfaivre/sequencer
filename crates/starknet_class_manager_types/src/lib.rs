@@ -13,13 +13,10 @@ use starknet_api::core::{ClassHash, CompiledClassHash};
 use starknet_api::deprecated_contract_class::ContractClass as DeprecatedClass;
 use starknet_api::state::SierraContractClass;
 use starknet_sequencer_infra::component_client::{
-    ClientError,
-    LocalComponentClient,
-    RemoteComponentClient,
+    ClientError, LocalComponentClient, RemoteComponentClient,
 };
 use starknet_sequencer_infra::component_definitions::{
-    ComponentClient,
-    ComponentRequestAndResponseSender,
+    ComponentClient, ComponentRequestAndResponseSender,
 };
 use starknet_sierra_multicompile_types::{SierraCompilerClientError, SierraCompilerError};
 use thiserror::Error;

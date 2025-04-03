@@ -6,11 +6,11 @@ use std::path::PathBuf;
 use std::sync::LazyLock;
 
 use starknet_api::core::ChainId;
-use tempfile::{tempdir, TempDir};
+use tempfile::{TempDir, tempdir};
 
 use crate::db::DbConfig;
 use crate::mmap_file::MmapFileConfig;
-use crate::{open_storage, StorageConfig, StorageReader, StorageScope, StorageWriter};
+use crate::{StorageConfig, StorageReader, StorageScope, StorageWriter, open_storage};
 
 /// A chain id for tests.
 pub static CHAIN_ID_FOR_TESTS: LazyLock<ChainId> =

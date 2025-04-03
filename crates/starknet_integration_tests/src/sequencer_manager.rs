@@ -2,8 +2,8 @@ use std::collections::{HashMap, HashSet};
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
-use futures::future::join_all;
 use futures::TryFutureExt;
+use futures::future::join_all;
 use mempool_test_utils::starknet_api_test_utils::{AccountId, MultiAccountTransactionGenerator};
 use papyrus_network::network_manager::test_utils::create_connected_network_configs;
 use papyrus_storage::StorageConfig;
@@ -12,15 +12,12 @@ use starknet_api::core::Nonce;
 use starknet_api::rpc_transaction::RpcTransaction;
 use starknet_api::transaction::TransactionHash;
 use starknet_infra_utils::test_utils::{
-    AvailablePorts,
-    TestIdentifier,
-    MAX_NUMBER_OF_INSTANCES_PER_TEST,
+    AvailablePorts, MAX_NUMBER_OF_INSTANCES_PER_TEST, TestIdentifier,
 };
 use starknet_monitoring_endpoint::test_utils::MonitoringClient;
 use starknet_sequencer_node::config::component_config::ComponentConfig;
 use starknet_sequencer_node::config::component_execution_config::{
-    ActiveComponentExecutionConfig,
-    ReactiveComponentExecutionConfig,
+    ActiveComponentExecutionConfig, ReactiveComponentExecutionConfig,
 };
 use starknet_sequencer_node::test_utils::node_runner::{get_node_executable_path, spawn_run_node};
 use tokio::task::JoinHandle;
@@ -29,15 +26,9 @@ use tracing::info;
 use crate::integration_test_setup::{ExecutableSetup, NodeExecutionId};
 use crate::monitoring_utils;
 use crate::utils::{
-    create_chain_info,
-    create_consensus_manager_configs_from_network_configs,
-    create_integration_test_tx_generator,
-    create_mempool_p2p_configs,
-    create_state_sync_configs,
-    send_account_txs,
-    BootstrapTxs,
-    InvokeTxs,
-    TestScenario,
+    BootstrapTxs, InvokeTxs, TestScenario, create_chain_info,
+    create_consensus_manager_configs_from_network_configs, create_integration_test_tx_generator,
+    create_mempool_p2p_configs, create_state_sync_configs, send_account_txs,
 };
 const DEFAULT_SENDER_ACCOUNT: AccountId = 0;
 const BLOCK_TO_WAIT_FOR_BOOTSTRAP: BlockNumber = BlockNumber(2);

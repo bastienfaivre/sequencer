@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use futures::channel::mpsc::{Receiver, SendError, Sender};
 use futures::channel::oneshot;
-use futures::future::{ready, Ready};
+use futures::future::{Ready, ready};
 use futures::sink::With;
 use futures::stream::Map;
 use futures::{SinkExt, StreamExt};
@@ -13,23 +13,13 @@ use libp2p::identity::Keypair;
 use libp2p::{Multiaddr, PeerId};
 
 use super::{
-    BroadcastReceivedMessagesConverterFn,
-    BroadcastTopicChannels,
-    BroadcastTopicClient,
-    BroadcastedMessageMetadata,
-    GenericReceiver,
-    NetworkError,
-    NetworkManager,
-    ReportReceiver,
-    ServerQueryManager,
-    ServerResponsesSender,
-    SqmrClientPayload,
-    SqmrClientSender,
-    SqmrServerReceiver,
-    Topic,
+    BroadcastReceivedMessagesConverterFn, BroadcastTopicChannels, BroadcastTopicClient,
+    BroadcastedMessageMetadata, GenericReceiver, NetworkError, NetworkManager, ReportReceiver,
+    ServerQueryManager, ServerResponsesSender, SqmrClientPayload, SqmrClientSender,
+    SqmrServerReceiver, Topic,
 };
-use crate::sqmr::Bytes;
 use crate::NetworkConfig;
+use crate::sqmr::Bytes;
 
 pub fn mock_register_sqmr_protocol_client<Query, Response>(
     buffer_size: usize,

@@ -7,22 +7,14 @@ use rstest::rstest;
 use starknet_api::block::FeeType;
 use starknet_api::core::ContractAddress;
 use starknet_api::execution_resources::{GasAmount, GasVector};
-use starknet_api::test_utils::invoke::{executable_invoke_tx, InvokeTxArgs};
+use starknet_api::test_utils::invoke::{InvokeTxArgs, executable_invoke_tx};
 use starknet_api::test_utils::{
-    NonceManager,
-    DEFAULT_L1_GAS_AMOUNT,
-    DEFAULT_STRK_L1_GAS_PRICE,
-    MAX_FEE,
-};
-use starknet_api::transaction::fields::{
-    Calldata,
-    Fee,
-    GasVectorComputationMode,
-    Resource,
-    TransactionSignature,
-    ValidResourceBounds,
+    DEFAULT_L1_GAS_AMOUNT, DEFAULT_STRK_L1_GAS_PRICE, MAX_FEE, NonceManager,
 };
 use starknet_api::transaction::TransactionVersion;
+use starknet_api::transaction::fields::{
+    Calldata, Fee, GasVectorComputationMode, Resource, TransactionSignature, ValidResourceBounds,
+};
 use starknet_api::{felt, invoke_tx_args, nonce};
 use starknet_types_core::felt::Felt;
 
@@ -34,20 +26,15 @@ use crate::state::cached_state::CachedState;
 use crate::state::state_api::StateReader;
 use crate::test_utils::dict_state_reader::DictStateReader;
 use crate::test_utils::initial_test_state::test_state;
-use crate::test_utils::{get_syscall_resources, get_tx_resources, BALANCE};
+use crate::test_utils::{BALANCE, get_syscall_resources, get_tx_resources};
 use crate::transaction::account_transaction::{AccountTransaction, ExecutionFlags};
 use crate::transaction::errors::{
-    ResourceBoundsError,
-    TransactionExecutionError,
-    TransactionFeeError,
+    ResourceBoundsError, TransactionExecutionError, TransactionFeeError,
     TransactionPreValidationError,
 };
 use crate::transaction::objects::{TransactionExecutionInfo, TransactionExecutionResult};
 use crate::transaction::test_utils::{
-    default_l1_resource_bounds,
-    invoke_tx_with_default_flags,
-    l1_resource_bounds,
-    INVALID,
+    INVALID, default_l1_resource_bounds, invoke_tx_with_default_flags, l1_resource_bounds,
 };
 use crate::transaction::transaction_types::TransactionType;
 use crate::transaction::transactions::ExecutableTransaction;
@@ -69,11 +56,11 @@ fn create_flavors_test_state(
     let test_contract = FeatureContract::TestContract(cairo_version);
     let account_contract = FeatureContract::AccountWithoutValidations(cairo_version);
     let faulty_account_contract = FeatureContract::FaultyAccount(cairo_version);
-    let state = test_state(
-        chain_info,
-        BALANCE,
-        &[(account_contract, 1), (faulty_account_contract, 1), (test_contract, 1)],
-    );
+    let state = test_state(chain_info, BALANCE, &[
+        (account_contract, 1),
+        (faulty_account_contract, 1),
+        (test_contract, 1),
+    ]);
     FlavorTestInitialState {
         state,
         account_address: account_contract.get_instance_address(0),
@@ -170,11 +157,9 @@ fn check_gas_and_fee(
 }
 
 fn recurse_calldata(contract_address: ContractAddress, fail: bool, depth: u32) -> Calldata {
-    create_calldata(
-        contract_address,
-        if fail { "recursive_fail" } else { "recurse" },
-        &[felt!(depth)],
-    )
+    create_calldata(contract_address, if fail { "recursive_fail" } else { "recurse" }, &[felt!(
+        depth
+    )])
 }
 
 // Helper function to get the arguments for the pre-validation tests.
@@ -850,15 +835,11 @@ fn test_simulate_validate_charge_fee_post_execution(
     assert!(felt!(actual_fee.0) < current_balance);
     let transfer_amount = current_balance - Felt::from(actual_fee.0 / 2);
     let recipient = felt!(7_u8);
-    let transfer_calldata = create_calldata(
-        fee_token_address,
-        "transfer",
-        &[
-            recipient, // Calldata: to.
-            transfer_amount,
-            felt!(0_u8),
-        ],
-    );
+    let transfer_calldata = create_calldata(fee_token_address, "transfer", &[
+        recipient, // Calldata: to.
+        transfer_amount,
+        felt!(0_u8),
+    ]);
     let tx = executable_invoke_tx(invoke_tx_args! {
         max_fee: actual_fee,
         resource_bounds: l1_resource_bounds(success_actual_gas, gas_price.into()),

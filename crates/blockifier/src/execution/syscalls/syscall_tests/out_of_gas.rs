@@ -8,9 +8,9 @@ use crate::abi::constants::MAX_POSSIBLE_SIERRA_GAS;
 use crate::blockifier_versioned_constants::VersionedConstants;
 use crate::execution::call_info::CallExecution;
 use crate::execution::entry_point::CallEntryPoint;
+use crate::execution::syscalls::SyscallSelector;
 use crate::execution::syscalls::syscall_tests::constants;
 use crate::execution::syscalls::syscall_tests::get_block_hash::initialize_state;
-use crate::execution::syscalls::SyscallSelector;
 use crate::retdata;
 use crate::test_utils::trivial_external_entry_point_new;
 
@@ -37,18 +37,15 @@ fn test_out_of_gas(runnable_version: RunnableCairo1) {
     let redeposit_gas = 300;
     let syscall_required_gas = get_block_hash_gas_cost - syscall_base_gas_cost;
     let call_info = entry_point_call.clone().execute_directly(&mut state).unwrap();
-    assert_eq!(
-        call_info.execution,
-        CallExecution {
-            // 'Out of gas'
-            retdata: retdata![felt!["0x4f7574206f6620676173"]],
-            gas_consumed: constants::REQUIRED_GAS_GET_BLOCK_HASH_TEST
-                - syscall_required_gas
-                - redeposit_gas,
-            failed: true,
-            ..Default::default()
-        }
-    );
+    assert_eq!(call_info.execution, CallExecution {
+        // 'Out of gas'
+        retdata: retdata![felt!["0x4f7574206f6620676173"]],
+        gas_consumed: constants::REQUIRED_GAS_GET_BLOCK_HASH_TEST
+            - syscall_required_gas
+            - redeposit_gas,
+        failed: true,
+        ..Default::default()
+    });
 }
 
 #[test]

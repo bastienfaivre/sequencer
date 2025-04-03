@@ -15,13 +15,10 @@ use starknet_sequencer_metrics::metric_definitions::SYNC_STATE_MARKER;
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 
 use super::block_data_stream_builder::BadPeerError;
-use crate::client::block_data_stream_builder::{
-    BlockData,
-    BlockDataStreamBuilder,
-    BlockNumberLimit,
-    ParseDataError,
-};
 use crate::client::P2pSyncClientError;
+use crate::client::block_data_stream_builder::{
+    BlockData, BlockDataStreamBuilder, BlockNumberLimit, ParseDataError,
+};
 
 impl BlockData for (ThinStateDiff, BlockNumber) {
     #[latency_histogram("p2p_sync_state_diff_write_to_storage_latency_seconds", true)]

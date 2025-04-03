@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
-use metrics::{counter, describe_counter, describe_gauge, gauge, Gauge, IntoF64};
+use metrics::{Gauge, IntoF64, counter, describe_counter, describe_gauge, gauge};
 use num_traits::Num;
-use regex::{escape, Regex};
+use regex::{Regex, escape};
 
 /// Relevant components for which metrics can be defined.
 #[derive(Clone, Copy, Debug)]

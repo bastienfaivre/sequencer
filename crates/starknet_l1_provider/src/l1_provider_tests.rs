@@ -6,18 +6,16 @@ use itertools::Itertools;
 use pretty_assertions::assert_eq;
 use starknet_api::block::BlockNumber;
 use starknet_api::tx_hash;
-use starknet_l1_provider_types::errors::L1ProviderError;
 use starknet_l1_provider_types::SessionState::{
-    self,
-    Propose as ProposeSession,
-    Validate as ValidateSession,
+    self, Propose as ProposeSession, Validate as ValidateSession,
 };
+use starknet_l1_provider_types::errors::L1ProviderError;
 use starknet_l1_provider_types::{Event, ValidationStatus};
 use starknet_state_sync_types::communication::MockStateSyncClient;
 
-use crate::bootstrapper::{Bootstrapper, CommitBlockBacklog, SyncTaskHandle};
-use crate::test_utils::{l1_handler, FakeL1ProviderClient, L1ProviderContentBuilder};
 use crate::ProviderState;
+use crate::bootstrapper::{Bootstrapper, CommitBlockBacklog, SyncTaskHandle};
+use crate::test_utils::{FakeL1ProviderClient, L1ProviderContentBuilder, l1_handler};
 
 macro_rules! bootstrapper {
     (backlog: [$($height:literal => [$($tx:literal),* $(,)*]),* $(,)*], catch_up: $catch:expr) => {{

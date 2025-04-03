@@ -12,9 +12,9 @@ mod manager_test;
 use std::collections::BTreeMap;
 use std::time::Duration;
 
+use futures::StreamExt;
 use futures::channel::mpsc;
 use futures::stream::FuturesUnordered;
-use futures::StreamExt;
 use metrics::counter;
 use papyrus_common::metrics::{PAPYRUS_CONSENSUS_HEIGHT, PAPYRUS_CONSENSUS_SYNC_COUNT};
 use papyrus_network::network_manager::BroadcastTopicClientTrait;
