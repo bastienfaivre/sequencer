@@ -4,15 +4,20 @@ mod rpc_transaction_test;
 
 use prost::Message;
 use starknet_api::rpc_transaction::{
-    RpcDeclareTransaction, RpcDeclareTransactionV3, RpcDeployAccountTransaction,
-    RpcDeployAccountTransactionV3, RpcInvokeTransaction, RpcInvokeTransactionV3, RpcTransaction,
+    RpcDeclareTransaction,
+    RpcDeclareTransactionV3,
+    RpcDeployAccountTransaction,
+    RpcDeployAccountTransactionV3,
+    RpcInvokeTransaction,
+    RpcInvokeTransactionV3,
+    RpcTransaction,
 };
 use starknet_api::state::SierraContractClass;
 use starknet_api::transaction::fields::{AllResourceBounds, ValidResourceBounds};
 use starknet_api::transaction::{DeployAccountTransactionV3, InvokeTransactionV3};
 
-use super::ProtobufConversionError;
 use super::common::missing;
+use super::ProtobufConversionError;
 use crate::auto_impl_into_and_try_from_vec_u8;
 use crate::mempool::RpcTransactionWrapper;
 use crate::protobuf::{self};

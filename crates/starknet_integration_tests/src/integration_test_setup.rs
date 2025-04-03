@@ -17,7 +17,7 @@ use starknet_monitoring_endpoint::test_utils::MonitoringClient;
 use starknet_sequencer_node::config::component_config::ComponentConfig;
 use starknet_sequencer_node::test_utils::node_runner::NodeRunner;
 use starknet_state_sync::config::StateSyncConfig;
-use tempfile::{TempDir, tempdir};
+use tempfile::{tempdir, TempDir};
 use tracing::instrument;
 
 use crate::config_utils::dump_config_file_changes;

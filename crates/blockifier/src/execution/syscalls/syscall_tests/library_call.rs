@@ -12,12 +12,13 @@ use crate::context::ChainInfo;
 use crate::execution::call_info::{CallExecution, CallInfo, Retdata, StorageAccessTracker};
 use crate::execution::entry_point::{CallEntryPoint, CallType};
 use crate::execution::syscalls::syscall_tests::constants::{
-    REQUIRED_GAS_LIBRARY_CALL_TEST, REQUIRED_GAS_STORAGE_READ_WRITE_TEST,
+    REQUIRED_GAS_LIBRARY_CALL_TEST,
+    REQUIRED_GAS_STORAGE_READ_WRITE_TEST,
 };
 use crate::retdata;
 use crate::test_utils::contracts::FeatureContractTrait;
 use crate::test_utils::initial_test_state::test_state;
-use crate::test_utils::{BALANCE, trivial_external_entry_point_new};
+use crate::test_utils::{trivial_external_entry_point_new, BALANCE};
 
 #[cfg_attr(feature = "cairo_native", test_case(RunnableCairo1::Native; "Native"))]
 #[test_case(RunnableCairo1::Casm; "VM")]
@@ -42,11 +43,14 @@ fn test_library_call(runnable_version: RunnableCairo1) {
         ..trivial_external_entry_point_new(test_contract)
     };
 
-    assert_eq!(entry_point_call.execute_directly(&mut state).unwrap().execution, CallExecution {
-        retdata: retdata![felt!(91_u16)],
-        gas_consumed: REQUIRED_GAS_LIBRARY_CALL_TEST,
-        ..Default::default()
-    });
+    assert_eq!(
+        entry_point_call.execute_directly(&mut state).unwrap().execution,
+        CallExecution {
+            retdata: retdata![felt!(91_u16)],
+            gas_consumed: REQUIRED_GAS_LIBRARY_CALL_TEST,
+            ..Default::default()
+        }
+    );
 }
 
 #[cfg_attr(feature = "cairo_native", test_case(RunnableCairo1::Native; "Native"))]
@@ -72,17 +76,20 @@ fn test_library_call_assert_fails(runnable_version: RunnableCairo1) {
     };
     let call_info = entry_point_call.execute_directly(&mut state).unwrap();
 
-    assert_eq!(call_info.execution, CallExecution {
-        retdata: Retdata(vec![
-            // 'x != y'.
-            felt!("0x7820213d2079"),
-            // 'ENTRYPOINT_FAILED'.
-            felt!("0x454e545259504f494e545f4641494c4544")
-        ]),
-        gas_consumed: 105050,
-        failed: true,
-        ..Default::default()
-    });
+    assert_eq!(
+        call_info.execution,
+        CallExecution {
+            retdata: Retdata(vec![
+                // 'x != y'.
+                felt!("0x7820213d2079"),
+                // 'ENTRYPOINT_FAILED'.
+                felt!("0x454e545259504f494e545f4641494c4544")
+            ]),
+            gas_consumed: 105050,
+            failed: true,
+            ..Default::default()
+        }
+    );
 }
 
 #[cfg_attr(feature = "cairo_native", test_case(RunnableCairo1::Native; "Native"))]

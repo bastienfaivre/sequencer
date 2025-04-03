@@ -4,12 +4,14 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 use starknet_infra_utils::type_name::short_type_name;
-use tokio::sync::Semaphore;
 use tokio::sync::mpsc::{Receiver, Sender};
+use tokio::sync::Semaphore;
 use tracing::{debug, error, info, warn};
 
 use crate::component_definitions::{
-    ComponentRequestAndResponseSender, ComponentRequestHandler, ComponentStarter,
+    ComponentRequestAndResponseSender,
+    ComponentRequestHandler,
+    ComponentStarter,
 };
 use crate::component_server::{ComponentReplacer, ComponentServerStarter};
 use crate::errors::{ComponentServerError, ReplaceComponentError};

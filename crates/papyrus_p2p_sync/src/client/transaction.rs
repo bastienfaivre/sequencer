@@ -5,16 +5,20 @@ use papyrus_protobuf::sync::DataOrFin;
 use papyrus_storage::body::{BodyStorageReader, BodyStorageWriter};
 use papyrus_storage::header::HeaderStorageReader;
 use papyrus_storage::{StorageError, StorageReader, StorageWriter};
-use papyrus_test_utils::{GetTestInstance, get_rng};
+use papyrus_test_utils::{get_rng, GetTestInstance};
 use starknet_api::block::{BlockBody, BlockNumber};
 use starknet_api::transaction::{FullTransaction, Transaction, TransactionOutput};
 use starknet_class_manager_types::SharedClassManagerClient;
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 
-use super::P2pSyncClientError;
 use super::block_data_stream_builder::{
-    BadPeerError, BlockData, BlockDataStreamBuilder, BlockNumberLimit, ParseDataError,
+    BadPeerError,
+    BlockData,
+    BlockDataStreamBuilder,
+    BlockNumberLimit,
+    ParseDataError,
 };
+use super::P2pSyncClientError;
 
 impl BlockData for (BlockBody, BlockNumber) {
     fn write_to_storage<'a>(

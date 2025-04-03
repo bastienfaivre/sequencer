@@ -6,30 +6,40 @@ use blockifier_test_utils::cairo_versions::{CairoVersion, RunnableCairo1};
 use mempool_test_utils::starknet_api_test_utils::{declare_tx, invoke_tx};
 use mockall::predicate::eq;
 use papyrus_network_types::network_types::BroadcastedMessageMetadata;
-use papyrus_test_utils::{GetTestInstance, get_rng};
+use papyrus_test_utils::{get_rng, GetTestInstance};
 use rstest::{fixture, rstest};
 use starknet_api::core::{ChainId, CompiledClassHash, ContractAddress, Nonce};
 use starknet_api::rpc_transaction::{
-    InternalRpcTransaction, InternalRpcTransactionWithoutTxHash, RpcDeclareTransaction,
+    InternalRpcTransaction,
+    InternalRpcTransactionWithoutTxHash,
+    RpcDeclareTransaction,
     RpcTransaction,
 };
 use starknet_api::transaction::{
-    InvokeTransaction, TransactionHash, TransactionHasher, TransactionVersion,
+    InvokeTransaction,
+    TransactionHash,
+    TransactionHasher,
+    TransactionVersion,
 };
 use starknet_class_manager_types::transaction_converter::TransactionConverter;
 use starknet_class_manager_types::{EmptyClassManagerClient, SharedClassManagerClient};
 use starknet_gateway_types::errors::GatewaySpecError;
 use starknet_mempool_types::communication::{
-    AddTransactionArgsWrapper, MempoolClientError, MempoolClientResult, MockMempoolClient,
+    AddTransactionArgsWrapper,
+    MempoolClientError,
+    MempoolClientResult,
+    MockMempoolClient,
 };
 use starknet_mempool_types::errors::MempoolError;
 use starknet_mempool_types::mempool_types::{AccountState, AddTransactionArgs};
 
 use crate::config::{
-    GatewayConfig, StatefulTransactionValidatorConfig, StatelessTransactionValidatorConfig,
+    GatewayConfig,
+    StatefulTransactionValidatorConfig,
+    StatelessTransactionValidatorConfig,
 };
 use crate::gateway::Gateway;
-use crate::state_reader_test_utils::{TestStateReaderFactory, local_test_state_reader_factory};
+use crate::state_reader_test_utils::{local_test_state_reader_factory, TestStateReaderFactory};
 
 #[fixture]
 fn config() -> GatewayConfig {

@@ -8,7 +8,13 @@ use starknet_infra_utils::path::current_dir;
 use starknet_types_core::felt::Felt;
 
 use crate::block::{
-    BlockInfo, BlockNumber, BlockTimestamp, GasPrice, GasPriceVector, GasPrices, NonzeroGasPrice,
+    BlockInfo,
+    BlockNumber,
+    BlockTimestamp,
+    GasPrice,
+    GasPriceVector,
+    GasPrices,
+    NonzeroGasPrice,
 };
 use crate::contract_address;
 use crate::core::{ChainId, ContractAddress, Nonce};

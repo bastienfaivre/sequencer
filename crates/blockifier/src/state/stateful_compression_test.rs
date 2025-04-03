@@ -9,9 +9,15 @@ use starknet_api::state::StorageKey;
 use starknet_types_core::felt::Felt;
 
 use super::{
-    ALIAS_COUNTER_STORAGE_KEY, Alias, AliasKey, AliasUpdater, INITIAL_AVAILABLE_ALIAS,
-    MAX_NON_COMPRESSED_CONTRACT_ADDRESS, MIN_VALUE_FOR_ALIAS_ALLOC, allocate_aliases_in_storage,
+    allocate_aliases_in_storage,
     compress,
+    Alias,
+    AliasKey,
+    AliasUpdater,
+    ALIAS_COUNTER_STORAGE_KEY,
+    INITIAL_AVAILABLE_ALIAS,
+    MAX_NON_COMPRESSED_CONTRACT_ADDRESS,
+    MIN_VALUE_FOR_ALIAS_ALLOC,
 };
 use crate::state::cached_state::{CachedState, StateMaps, StorageEntry};
 use crate::state::state_api::{State, StateReader};

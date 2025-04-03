@@ -14,10 +14,13 @@ use std::collections::BTreeMap;
 use std::time::Duration;
 
 use papyrus_base_layer::constants::{
-    CONSUMED_MESSAGE_TO_L1_EVENT_IDENTIFIER, EventIdentifier, LOG_MESSAGE_TO_L2_EVENT_IDENTIFIER,
-    MESSAGE_TO_L2_CANCELED_EVENT_IDENTIFIER, MESSAGE_TO_L2_CANCELLATION_STARTED_EVENT_IDENTIFIER,
+    EventIdentifier,
+    CONSUMED_MESSAGE_TO_L1_EVENT_IDENTIFIER,
+    LOG_MESSAGE_TO_L2_EVENT_IDENTIFIER,
+    MESSAGE_TO_L2_CANCELED_EVENT_IDENTIFIER,
+    MESSAGE_TO_L2_CANCELLATION_STARTED_EVENT_IDENTIFIER,
 };
-use papyrus_config::dumping::{SerializeConfig, ser_param};
+use papyrus_config::dumping::{ser_param, SerializeConfig};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use serde::{Deserialize, Serialize};
 use starknet_api::block::BlockNumber;

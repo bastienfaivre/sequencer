@@ -6,7 +6,7 @@ use std::mem;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use papyrus_config::dumping::{SerializeConfig, ser_param};
+use papyrus_config::dumping::{ser_param, SerializeConfig};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_storage::class_hash::{ClassHashStorageReader, ClassHashStorageWriter};
 use serde::{Deserialize, Serialize};

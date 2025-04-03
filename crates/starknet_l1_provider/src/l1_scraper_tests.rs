@@ -3,10 +3,14 @@ use std::sync::Arc;
 use alloy::node_bindings::AnvilInstance;
 use alloy::primitives::U256;
 use papyrus_base_layer::ethereum_base_layer_contract::{
-    EthereumBaseLayerConfig, EthereumBaseLayerContract, Starknet,
+    EthereumBaseLayerConfig,
+    EthereumBaseLayerContract,
+    Starknet,
 };
 use papyrus_base_layer::test_utils::{
-    DEFAULT_ANVIL_L1_ACCOUNT_ADDRESS, DEFAULT_ANVIL_L1_DEPLOYED_ADDRESS, anvil,
+    anvil,
+    DEFAULT_ANVIL_L1_ACCOUNT_ADDRESS,
+    DEFAULT_ANVIL_L1_DEPLOYED_ADDRESS,
 };
 use starknet_api::contract_address;
 use starknet_api::core::{EntryPointSelector, Nonce};

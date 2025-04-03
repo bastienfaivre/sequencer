@@ -10,10 +10,13 @@ use starknet_api::contract_class::ContractClass;
 use starknet_api::core::{ClassHash, ContractAddress, Nonce};
 use starknet_api::state::StorageKey;
 use starknet_sequencer_infra::component_client::{
-    ClientError, LocalComponentClient, RemoteComponentClient,
+    ClientError,
+    LocalComponentClient,
+    RemoteComponentClient,
 };
 use starknet_sequencer_infra::component_definitions::{
-    ComponentClient, ComponentRequestAndResponseSender,
+    ComponentClient,
+    ComponentRequestAndResponseSender,
 };
 use starknet_types_core::felt::Felt;
 use thiserror::Error;

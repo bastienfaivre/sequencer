@@ -1,5 +1,5 @@
 use crate::errors::DeserializationError;
-use crate::storage_trait::{DbKey, DbKeyPrefix, DbValue, create_db_key};
+use crate::storage_trait::{create_db_key, DbKey, DbKeyPrefix, DbValue};
 
 pub trait HasDynamicPrefix {
     /// Returns the storage key prefix of the DB object.

@@ -2,101 +2,218 @@ use indoc::indoc;
 
 use crate::hints::error::{HintExtensionResult, HintResult, OsHintError};
 use crate::hints::hint_implementation::block_context::{
-    block_number, block_timestamp, bytecode_segment_structure, chain_id,
-    deprecated_fee_token_address, fee_token_address, get_block_mapping, is_leaf, load_class,
-    load_class_inner, sequencer_address, write_use_kzg_da_to_memory,
+    block_number,
+    block_timestamp,
+    bytecode_segment_structure,
+    chain_id,
+    deprecated_fee_token_address,
+    fee_token_address,
+    get_block_mapping,
+    is_leaf,
+    load_class,
+    load_class_inner,
+    sequencer_address,
+    write_use_kzg_da_to_memory,
 };
 use crate::hints::hint_implementation::bls_field::compute_ids_low;
 use crate::hints::hint_implementation::builtins::{
-    select_builtin, selected_builtins, update_builtin_ptrs,
+    select_builtin,
+    selected_builtins,
+    update_builtin_ptrs,
 };
 use crate::hints::hint_implementation::cairo1_revert::{
-    generate_dummy_os_output_segment, prepare_state_entry_for_revert, read_storage_key_for_revert,
+    generate_dummy_os_output_segment,
+    prepare_state_entry_for_revert,
+    read_storage_key_for_revert,
     write_storage_key_for_revert,
 };
 use crate::hints::hint_implementation::compiled_class::{
-    assert_end_of_bytecode_segments, assign_bytecode_segments, delete_memory_data,
-    iter_current_segment_info, set_ap_to_segment_hash,
+    assert_end_of_bytecode_segments,
+    assign_bytecode_segments,
+    delete_memory_data,
+    iter_current_segment_info,
+    set_ap_to_segment_hash,
     validate_compiled_class_facts_post_execution,
 };
 use crate::hints::hint_implementation::deprecated_compiled_class::{
-    load_deprecated_class, load_deprecated_class_facts, load_deprecated_class_inner,
+    load_deprecated_class,
+    load_deprecated_class_facts,
+    load_deprecated_class_inner,
 };
 use crate::hints::hint_implementation::execute_syscalls::is_block_number_in_block_hash_buffer;
 use crate::hints::hint_implementation::execute_transactions::{
-    fill_holes_in_rc96_segment, log_remaining_txs, os_input_transactions, segments_add,
-    segments_add_temp, set_ap_to_actual_fee, set_component_hashes,
-    set_sha256_segment_in_syscall_handler, sha2_finalize, skip_tx, start_tx_short,
+    fill_holes_in_rc96_segment,
+    log_remaining_txs,
+    os_input_transactions,
+    segments_add,
+    segments_add_temp,
+    set_ap_to_actual_fee,
+    set_component_hashes,
+    set_sha256_segment_in_syscall_handler,
+    sha2_finalize,
+    skip_tx,
+    start_tx_short,
     start_tx_validate_declare_execution_context,
 };
 use crate::hints::hint_implementation::execution::{
-    assert_transaction_hash, cache_contract_storage_request_key,
-    cache_contract_storage_syscall_request_address, check_execution, check_is_deprecated,
-    check_new_deploy_response, check_new_syscall_response, check_syscall_response,
-    contract_address, end_tx, enter_call, enter_scope_deprecated_syscall_handler,
-    enter_scope_descend_edge, enter_scope_left_child, enter_scope_new_node,
-    enter_scope_next_node_bit_0, enter_scope_next_node_bit_1, enter_scope_node,
-    enter_scope_right_child, enter_scope_syscall_handler, enter_syscall_scopes, exit_call, exit_tx,
-    fetch_result, gen_class_hash_arg, gen_signature_arg,
+    assert_transaction_hash,
+    cache_contract_storage_request_key,
+    cache_contract_storage_syscall_request_address,
+    check_execution,
+    check_is_deprecated,
+    check_new_deploy_response,
+    check_new_syscall_response,
+    check_syscall_response,
+    contract_address,
+    end_tx,
+    enter_call,
+    enter_scope_deprecated_syscall_handler,
+    enter_scope_descend_edge,
+    enter_scope_left_child,
+    enter_scope_new_node,
+    enter_scope_next_node_bit_0,
+    enter_scope_next_node_bit_1,
+    enter_scope_node,
+    enter_scope_right_child,
+    enter_scope_syscall_handler,
+    enter_syscall_scopes,
+    exit_call,
+    exit_tx,
+    fetch_result,
+    gen_class_hash_arg,
+    gen_signature_arg,
     get_block_hash_contract_address_state_entry_and_set_new_state_entry,
-    get_contract_address_state_entry, get_contract_address_state_entry_and_set_new_state_entry,
-    get_old_block_number_and_hash, initial_ge_required_gas, is_deprecated,
-    is_remaining_gas_lt_initial_budget, is_reverted, load_next_tx, log_enter_syscall,
-    os_context_segments, prepare_constructor_execution, set_ap_to_tx_nonce,
-    set_fp_plus_4_to_tx_nonce, set_state_entry_to_account_contract_address, start_tx_long,
-    transaction_version, tx_account_deployment_data, tx_account_deployment_data_len, tx_calldata,
-    tx_calldata_len, tx_entry_point_selector, tx_fee_data_availability_mode, tx_max_fee, tx_nonce,
-    tx_nonce_data_availability_mode, tx_paymaster_data, tx_paymaster_data_len, tx_tip,
-    write_old_block_to_storage, write_syscall_result, write_syscall_result_deprecated,
+    get_contract_address_state_entry,
+    get_contract_address_state_entry_and_set_new_state_entry,
+    get_old_block_number_and_hash,
+    initial_ge_required_gas,
+    is_deprecated,
+    is_remaining_gas_lt_initial_budget,
+    is_reverted,
+    load_next_tx,
+    log_enter_syscall,
+    os_context_segments,
+    prepare_constructor_execution,
+    set_ap_to_tx_nonce,
+    set_fp_plus_4_to_tx_nonce,
+    set_state_entry_to_account_contract_address,
+    start_tx_long,
+    transaction_version,
+    tx_account_deployment_data,
+    tx_account_deployment_data_len,
+    tx_calldata,
+    tx_calldata_len,
+    tx_entry_point_selector,
+    tx_fee_data_availability_mode,
+    tx_max_fee,
+    tx_nonce,
+    tx_nonce_data_availability_mode,
+    tx_paymaster_data,
+    tx_paymaster_data_len,
+    tx_tip,
+    write_old_block_to_storage,
+    write_syscall_result,
+    write_syscall_result_deprecated,
 };
 use crate::hints::hint_implementation::find_element::search_sorted_optimistic;
 use crate::hints::hint_implementation::kzg::store_da_segment;
 use crate::hints::hint_implementation::math::log2_ceil;
 use crate::hints::hint_implementation::os::{
-    configure_kzg_manager, initialize_class_hashes, initialize_state_changes,
-    set_ap_to_new_block_hash, set_ap_to_prev_block_hash, starknet_os_input,
+    configure_kzg_manager,
+    initialize_class_hashes,
+    initialize_state_changes,
+    set_ap_to_new_block_hash,
+    set_ap_to_prev_block_hash,
+    starknet_os_input,
     write_full_output_to_memory,
 };
 use crate::hints::hint_implementation::os_logger::{
-    os_logger_enter_syscall_prepare_exit_syscall, os_logger_exit_syscall,
+    os_logger_enter_syscall_prepare_exit_syscall,
+    os_logger_exit_syscall,
 };
 use crate::hints::hint_implementation::output::{
-    set_compressed_start, set_n_updates_small, set_state_updates_start, set_tree_structure,
+    set_compressed_start,
+    set_n_updates_small,
+    set_state_updates_start,
+    set_tree_structure,
 };
 use crate::hints::hint_implementation::patricia::{
-    assert_case_is_right, build_descent_map, height_is_zero_or_len_node_preimage_is_two,
-    is_case_right, prepare_preimage_validation_non_deterministic_hashes, set_ap_to_descend,
-    set_bit, set_siblings, split_descend, write_case_not_left_to_ap,
+    assert_case_is_right,
+    build_descent_map,
+    height_is_zero_or_len_node_preimage_is_two,
+    is_case_right,
+    prepare_preimage_validation_non_deterministic_hashes,
+    set_ap_to_descend,
+    set_bit,
+    set_siblings,
+    split_descend,
+    write_case_not_left_to_ap,
 };
 use crate::hints::hint_implementation::resources::{
-    debug_expected_initial_gas, is_sierra_gas_mode, remaining_gas_gt_max,
+    debug_expected_initial_gas,
+    is_sierra_gas_mode,
+    remaining_gas_gt_max,
 };
 use crate::hints::hint_implementation::secp::{is_on_curve, read_ec_point_from_address};
 use crate::hints::hint_implementation::state::{
-    decode_node, load_bottom, load_edge, set_preimage_for_class_commitments,
-    set_preimage_for_current_commitment_info, set_preimage_for_state_commitments,
+    decode_node,
+    load_bottom,
+    load_edge,
+    set_preimage_for_class_commitments,
+    set_preimage_for_current_commitment_info,
+    set_preimage_for_state_commitments,
     write_split_result,
 };
 use crate::hints::hint_implementation::stateful_compression::{
-    assert_key_big_enough_for_alias, compute_commitments_on_finalized_state_with_aliases,
-    contract_address_le_max_for_compression, enter_scope_with_aliases,
-    get_alias_entry_for_state_update, initialize_alias_counter, key_lt_min_alias_alloc_value,
-    read_alias_counter, read_alias_from_key, update_alias_counter, write_next_alias_from_key,
+    assert_key_big_enough_for_alias,
+    compute_commitments_on_finalized_state_with_aliases,
+    contract_address_le_max_for_compression,
+    enter_scope_with_aliases,
+    get_alias_entry_for_state_update,
+    initialize_alias_counter,
+    key_lt_min_alias_alloc_value,
+    read_alias_counter,
+    read_alias_from_key,
+    update_alias_counter,
+    write_next_alias_from_key,
 };
 use crate::hints::hint_implementation::stateless_compression::{
-    compression_hint, dictionary_from_bucket, get_prev_offset, set_decompressed_dst,
+    compression_hint,
+    dictionary_from_bucket,
+    get_prev_offset,
+    set_decompressed_dst,
 };
 use crate::hints::hint_implementation::syscalls::{
-    call_contract, delegate_call, delegate_l1_handler, deploy, emit_event, get_block_number,
-    get_block_timestamp, get_caller_address, get_contract_address, get_sequencer_address,
-    get_tx_info, get_tx_signature, library_call, library_call_l1_handler, replace_class,
-    send_message_to_l1, set_syscall_ptr, storage_read, storage_write,
+    call_contract,
+    delegate_call,
+    delegate_l1_handler,
+    deploy,
+    emit_event,
+    get_block_number,
+    get_block_timestamp,
+    get_caller_address,
+    get_contract_address,
+    get_sequencer_address,
+    get_tx_info,
+    get_tx_signature,
+    library_call,
+    library_call_l1_handler,
+    replace_class,
+    send_message_to_l1,
+    set_syscall_ptr,
+    storage_read,
+    storage_write,
 };
 use crate::hints::hint_implementation::transaction_hash::{
-    additional_data_new_segment, data_to_hash_new_segment,
+    additional_data_new_segment,
+    data_to_hash_new_segment,
 };
 use crate::hints::types::{
-    HintArgs, HintEnum, HintExtensionArgs, HintExtensionImplementation, HintImplementation,
+    HintArgs,
+    HintEnum,
+    HintExtensionArgs,
+    HintExtensionImplementation,
+    HintImplementation,
 };
 use crate::{define_hint_enum, define_hint_extension_enum};
 
@@ -203,7 +320,10 @@ define_hint_enum!(
         r#"memory[ap] = to_felt_or_relocatable(ids.request_block_number > \
            ids.current_block_number - ids.STORED_BLOCK_HASH_BUFFER)"#
     ),
-    (LoadClassInner, load_class_inner, indoc! {r#"
+    (
+        LoadClassInner,
+        load_class_inner,
+        indoc! {r#"
     from starkware.starknet.core.os.contract_class.compiled_class_hash import (
         create_bytecode_segment_structure,
         get_compiled_class_struct,
@@ -237,11 +357,16 @@ define_hint_enum!(
 
         # Load hints and debug info.
         vm_load_program(
-            compiled_class.get_runnable_program(entrypoint_builtins=[]), bytecode_ptr)"#}),
-    (BytecodeSegmentStructure, bytecode_segment_structure, indoc! {r#"
+            compiled_class.get_runnable_program(entrypoint_builtins=[]), bytecode_ptr)"#}
+    ),
+    (
+        BytecodeSegmentStructure,
+        bytecode_segment_structure,
+        indoc! {r#"
     vm_enter_scope({
         "bytecode_segment_structure": bytecode_segment_structures[ids.compiled_class_fact.hash]
-    })"#}),
+    })"#}
+    ),
     (
         BlockNumber,
         block_number,
@@ -272,28 +397,47 @@ define_hint_enum!(
         sequencer_address,
         "memory[ap] = to_felt_or_relocatable(syscall_handler.block_info.sequencer_address)"
     ),
-    (GetBlockMapping, get_block_mapping, indoc! {r#"
+    (
+        GetBlockMapping,
+        get_block_mapping,
+        indoc! {r#"
     ids.state_entry = __dict_manager.get_dict(ids.contract_state_changes)[
         ids.BLOCK_HASH_CONTRACT_ADDRESS
-    ]"#}),
-    (IsLeaf, is_leaf, indoc! {r#"
+    ]"#}
+    ),
+    (
+        IsLeaf,
+        is_leaf,
+        indoc! {r#"
     from starkware.starknet.core.os.contract_class.compiled_class_hash_objects import (
         BytecodeLeaf,
     )
-    ids.is_leaf = 1 if isinstance(bytecode_segment_structure, BytecodeLeaf) else 0"#}),
-    (WriteUseKzgDaToMemory, write_use_kzg_da_to_memory, indoc! {r#"
+    ids.is_leaf = 1 if isinstance(bytecode_segment_structure, BytecodeLeaf) else 0"#}
+    ),
+    (
+        WriteUseKzgDaToMemory,
+        write_use_kzg_da_to_memory,
+        indoc! {r#"
     memory[fp + 24] = to_felt_or_relocatable(syscall_handler.block_info.use_kzg_da and (
         not os_input.full_output
-    ))"#}),
-    (ComputeIdsLow, compute_ids_low, indoc! {r#"
-        ids.low = (ids.value.d0 + ids.value.d1 * ids.BASE) & ((1 << 128) - 1)"#
-    }),
+    ))"#}
+    ),
+    (
+        ComputeIdsLow,
+        compute_ids_low,
+        indoc! {r#"
+            ids.low = (ids.value.d0 + ids.value.d1 * ids.BASE) & ((1 << 128) - 1)"#
+        }
+    ),
     (
         SelectedBuiltins,
         selected_builtins,
         "vm_enter_scope({'n_selected_builtins': ids.n_selected_builtins})"
     ),
-    (SelectBuiltin, select_builtin, indoc! {r##"
+    (
+        SelectBuiltin,
+        select_builtin,
+        indoc! {r##"
     # A builtin should be selected iff its encoding appears in the selected encodings list
     # and the list wasn't exhausted.
     # Note that testing inclusion by a single comparison is possible since the lists are sorted.
@@ -301,8 +445,12 @@ define_hint_enum!(
       n_selected_builtins > 0 and memory[ids.selected_encodings] == memory[ids.all_encodings])
     if ids.select_builtin:
       n_selected_builtins = n_selected_builtins - 1"##
-    }),
-    (UpdateBuiltinPtrs, update_builtin_ptrs, indoc! {r#"
+        }
+    ),
+    (
+        UpdateBuiltinPtrs,
+        update_builtin_ptrs,
+        indoc! {r#"
     from starkware.starknet.core.os.os_utils import update_builtin_pointers
 
     # Fill the values of all builtin pointers after the current transaction.
@@ -317,7 +465,8 @@ define_hint_enum!(
             selected_builtin_ptrs_addr=ids.selected_ptrs,
             ),
         )"#
-    }),
+        }
+    ),
     (
         PrepareStateEntryForRevert,
         prepare_state_entry_for_revert,
@@ -343,14 +492,25 @@ define_hint_enum!(
         generate_dummy_os_output_segment,
         "memory[ap] = to_felt_or_relocatable(segments.gen_arg([[], 0]))"
     ),
-    (AssignBytecodeSegments, assign_bytecode_segments, indoc! {r#"
-        bytecode_segments = iter(bytecode_segment_structure.segments)"#
-    }),
-    (AssertEndOfBytecodeSegments, assert_end_of_bytecode_segments, indoc! {r#"
-        assert next(bytecode_segments, None) is None"#
-    }),
+    (
+        AssignBytecodeSegments,
+        assign_bytecode_segments,
+        indoc! {r#"
+            bytecode_segments = iter(bytecode_segment_structure.segments)"#
+        }
+    ),
+    (
+        AssertEndOfBytecodeSegments,
+        assert_end_of_bytecode_segments,
+        indoc! {r#"
+            assert next(bytecode_segments, None) is None"#
+        }
+    ),
     (DeleteMemoryData, delete_memory_data, "del memory.data[ids.data_ptr]"),
-    (IterCurrentSegmentInfo, iter_current_segment_info, indoc! {r#"
+    (
+        IterCurrentSegmentInfo,
+        iter_current_segment_info,
+        indoc! {r#"
     current_segment_info = next(bytecode_segments)
 
     is_used = current_segment_info.is_used
@@ -363,10 +523,15 @@ define_hint_enum!(
     vm_enter_scope(new_scope_locals={
         "bytecode_segment_structure": current_segment_info.inner_structure,
     })"#
-    }),
-    (SetApToSegmentHash, set_ap_to_segment_hash, indoc! {r#"
-        memory[ap] = to_felt_or_relocatable(bytecode_segment_structure.hash())"#
-    }),
+        }
+    ),
+    (
+        SetApToSegmentHash,
+        set_ap_to_segment_hash,
+        indoc! {r#"
+            memory[ap] = to_felt_or_relocatable(bytecode_segment_structure.hash())"#
+        }
+    ),
     (
         ValidateCompiledClassFactsPostExecution,
         validate_compiled_class_facts_post_execution,
@@ -477,9 +642,13 @@ define_hint_enum!(
         compute_commitments_on_finalized_state_with_aliases,
         "commitment_info_by_address=execution_helper.compute_storage_commitments()"
     ),
-    (DictionaryFromBucket, dictionary_from_bucket, indoc! {
-        r#"initial_dict = {bucket_index: 0 for bucket_index in range(ids.TOTAL_N_BUCKETS)}"#
-    }),
+    (
+        DictionaryFromBucket,
+        dictionary_from_bucket,
+        indoc! {
+            r#"initial_dict = {bucket_index: 0 for bucket_index in range(ids.TOTAL_N_BUCKETS)}"#
+        }
+    ),
     (
         GetPrevOffset,
         get_prev_offset,
@@ -500,7 +669,10 @@ define_hint_enum!(
         indoc! {r#"memory[ids.decompressed_dst] = ids.packed_felt % ids.elm_bound"#
         }
     ),
-    (LoadDeprecatedClassFacts, load_deprecated_class_facts, indoc! {r##"
+    (
+        LoadDeprecatedClassFacts,
+        load_deprecated_class_facts,
+        indoc! {r##"
     # Creates a set of deprecated class hashes to distinguish calls to deprecated entry points.
     __deprecated_class_hashes=set(os_input.deprecated_compiled_classes.keys())
     ids.compiled_class_facts = segments.add()
@@ -508,8 +680,12 @@ define_hint_enum!(
     vm_enter_scope({
         'compiled_class_facts': iter(os_input.deprecated_compiled_classes.items()),
     })"##
-    }),
-    (LoadDeprecatedClassInner, load_deprecated_class_inner, indoc! {r#"
+        }
+    ),
+    (
+        LoadDeprecatedClassInner,
+        load_deprecated_class_inner,
+        indoc! {r#"
     from starkware.starknet.core.os.contract_class.deprecated_class_hash import (
         get_deprecated_contract_class_struct,
     )
@@ -519,7 +695,8 @@ define_hint_enum!(
     cairo_contract = get_deprecated_contract_class_struct(
         identifiers=ids._context.identifiers, contract_class=compiled_class)
     ids.compiled_class = segments.gen_arg(cairo_contract)"#
-    }),
+        }
+    ),
     (
         StartTxValidateDeclareExecutionContext,
         start_tx_validate_declare_execution_context,
@@ -547,13 +724,25 @@ define_hint_enum!(
         indoc! {r#"memory[fp + 12] = to_felt_or_relocatable(len(os_input.transactions))"#
         }
     ),
-    (SegmentsAdd, segments_add, indoc! {r#"memory[ap] = to_felt_or_relocatable(segments.add())"#
-    }),
-    (SetApToActualFee, set_ap_to_actual_fee, indoc! {
-        r#"memory[ap] = to_felt_or_relocatable(execution_helper.tx_execution_info.actual_fee)"#
-    }),
-    (SkipTx, skip_tx, indoc! {r#"execution_helper.skip_tx()"#
-    }),
+    (
+        SegmentsAdd,
+        segments_add,
+        indoc! {r#"memory[ap] = to_felt_or_relocatable(segments.add())"#
+        }
+    ),
+    (
+        SetApToActualFee,
+        set_ap_to_actual_fee,
+        indoc! {
+            r#"memory[ap] = to_felt_or_relocatable(execution_helper.tx_execution_info.actual_fee)"#
+        }
+    ),
+    (
+        SkipTx,
+        skip_tx,
+        indoc! {r#"execution_helper.skip_tx()"#
+        }
+    ),
     (
         SetSha256SegmentInSyscallHandler,
         set_sha256_segment_in_syscall_handler,
@@ -564,21 +753,32 @@ define_hint_enum!(
         log_remaining_txs,
         indoc! {r#"print(f"execute_transactions_inner: {ids.n_txs} transactions remaining.")"#}
     ),
-    (FillHolesInRc96Segment, fill_holes_in_rc96_segment, indoc! {r#"
+    (
+        FillHolesInRc96Segment,
+        fill_holes_in_rc96_segment,
+        indoc! {r#"
 rc96_ptr = ids.range_check96_ptr
 segment_size = rc96_ptr.offset
 base = rc96_ptr - segment_size
 
 for i in range(segment_size):
-    memory.setdefault(base + i, 0)"#}),
-    (SetComponentHashes, set_component_hashes, indoc! {r#"
+    memory.setdefault(base + i, 0)"#}
+    ),
+    (
+        SetComponentHashes,
+        set_component_hashes,
+        indoc! {r#"
 class_component_hashes = component_hashes[tx.class_hash]
 assert (
     len(class_component_hashes) == ids.ContractClassComponentHashes.SIZE
 ), "Wrong number of class component hashes."
 ids.contract_class_component_hashes = segments.gen_arg(class_component_hashes)"#
-    }),
-    (Sha2Finalize, sha2_finalize, indoc! {r#"# Add dummy pairs of input and output.
+        }
+    ),
+    (
+        Sha2Finalize,
+        sha2_finalize,
+        indoc! {r#"# Add dummy pairs of input and output.
 from starkware.cairo.common.cairo_sha256.sha256_utils import (
     IV,
     compute_message_schedule,
@@ -594,8 +794,12 @@ message = [0] * _sha256_input_chunk_size_felts
 w = compute_message_schedule(message)
 output = sha2_compress_function(IV, w)
 padding = (message + IV + output) * number_of_missing_blocks
-segments.write_arg(ids.sha256_ptr_end, padding)"#}),
-    (LoadNextTx, load_next_tx, indoc! {r#"
+segments.write_arg(ids.sha256_ptr_end, padding)"#}
+    ),
+    (
+        LoadNextTx,
+        load_next_tx,
+        indoc! {r#"
     from src.starkware.starknet.core.os.transaction_hash.transaction_hash import (
         create_resource_bounds_list,
     )
@@ -627,20 +831,29 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
     else:
         ids.resource_bounds = segments.gen_arg(create_resource_bounds_list(tx.resource_bounds))
         ids.n_resource_bounds = len(tx.resource_bounds)"#
-    }),
+        }
+    ),
     (ExitTx, exit_tx, "exit_tx()"),
-    (PrepareConstructorExecution, prepare_constructor_execution, indoc! {r#"
+    (
+        PrepareConstructorExecution,
+        prepare_constructor_execution,
+        indoc! {r#"
     ids.contract_address_salt = tx.contract_address_salt
     ids.class_hash = tx.class_hash
     ids.constructor_calldata_size = len(tx.constructor_calldata)
     ids.constructor_calldata = segments.gen_arg(arg=tx.constructor_calldata)"#
-    }),
+        }
+    ),
     (TransactionVersion, transaction_version, "memory[ap] = to_felt_or_relocatable(tx.version)"),
-    (AssertTransactionHash, assert_transaction_hash, indoc! {r#"
+    (
+        AssertTransactionHash,
+        assert_transaction_hash,
+        indoc! {r#"
     assert ids.transaction_hash == tx.hash_value, (
         "Computed transaction_hash is inconsistent with the hash in the transaction. "
         f"Computed hash = {ids.transaction_hash}, Expected hash = {tx.hash_value}.")"#
-    }),
+        }
+    ),
     (
         EnterScopeDeprecatedSyscallHandler,
         enter_scope_deprecated_syscall_handler,
@@ -651,11 +864,15 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         enter_scope_syscall_handler,
         "vm_enter_scope({'syscall_handler': syscall_handler})"
     ),
-    (GetContractAddressStateEntry, get_contract_address_state_entry, indoc! {r#"
+    (
+        GetContractAddressStateEntry,
+        get_contract_address_state_entry,
+        indoc! {r#"
     # Fetch a state_entry in this hint and validate it in the update at the end
     # of this function.
     ids.state_entry = __dict_manager.get_dict(ids.contract_state_changes)[ids.contract_address]"#
-    }),
+        }
+    ),
     (
         SetStateEntryToAccountContractAddress,
         set_state_entry_to_account_contract_address,
@@ -703,11 +920,18 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         "is_deprecated = 1 if ids.execution_context.class_hash in __deprecated_class_hashes else 0"
     ),
     (IsDeprecated, is_deprecated, "memory[ap] = to_felt_or_relocatable(is_deprecated)"),
-    (OsContextSegments, os_context_segments, indoc! {r#"
+    (
+        OsContextSegments,
+        os_context_segments,
+        indoc! {r#"
     ids.os_context = segments.add()
     ids.syscall_ptr = segments.add()"#
-    }),
-    (EnterSyscallScopes, enter_syscall_scopes, indoc! {r#"vm_enter_scope({
+        }
+    ),
+    (
+        EnterSyscallScopes,
+        enter_syscall_scopes,
+        indoc! {r#"vm_enter_scope({
         '__deprecated_class_hashes': __deprecated_class_hashes,
         'transactions': iter(os_input.transactions),
         'component_hashes': os_input.declared_class_hash_to_component_hashes,
@@ -716,7 +940,8 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         'syscall_handler': syscall_handler,
          '__dict_manager': __dict_manager,
     })"#
-    }),
+        }
+    ),
     (EndTx, end_tx, "execution_helper.end_tx()"),
     (
         EnterCall,
@@ -724,14 +949,18 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         "execution_helper.enter_call(cairo_execution_info=ids.execution_context.execution_info)"
     ),
     (ExitCall, exit_call, "execution_helper.exit_call()"),
-    (ContractAddress, contract_address, indoc! {r#"
+    (
+        ContractAddress,
+        contract_address,
+        indoc! {r#"
     from starkware.starknet.business_logic.transaction.deprecated_objects import (
         InternalL1Handler,
     )
     ids.contract_address = (
         tx.contract_address if isinstance(tx, InternalL1Handler) else tx.sender_address
     )"#
-    }),
+        }
+    ),
     (TxCalldataLen, tx_calldata_len, "memory[ap] = to_felt_or_relocatable(len(tx.calldata))"),
     (TxCalldata, tx_calldata, "memory[ap] = to_felt_or_relocatable(segments.gen_arg(tx.calldata))"),
     (
@@ -781,20 +1010,31 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         "memory[ap] = to_felt_or_relocatable(0 if tx.version < 3 else \
          segments.gen_arg(tx.account_deployment_data))"
     ),
-    (GenSignatureArg, gen_signature_arg, indoc! {r#"
+    (
+        GenSignatureArg,
+        gen_signature_arg,
+        indoc! {r#"
 	ids.signature_start = segments.gen_arg(arg=tx.signature)
 	ids.signature_len = len(tx.signature)"#
-    }),
-    (StartTxLong, start_tx_long, indoc! {r#"
+        }
+    ),
+    (
+        StartTxLong,
+        start_tx_long,
+        indoc! {r#"
     tx_info_ptr = ids.tx_execution_context.deprecated_tx_info.address_
     execution_helper.start_tx(tx_info_ptr=tx_info_ptr)"#
-    }),
+        }
+    ),
     (
         IsReverted,
         is_reverted,
         "memory[ap] = to_felt_or_relocatable(execution_helper.tx_execution_info.is_reverted)"
     ),
-    (CheckExecution, check_execution, indoc! {r#"
+    (
+        CheckExecution,
+        check_execution,
+        indoc! {r#"
     if execution_helper.debug_mode:
         # Validate the predicted gas cost.
         # TODO(Yoni, 1/1/2025): remove this check once Cairo 0 is not supported.
@@ -815,13 +1055,17 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         syscall_ptr_end=ids.entry_point_return_values.syscall_ptr
     )
     execution_helper.exit_call()"#
-    }),
+        }
+    ),
     (
         IsRemainingGasLtInitialBudget,
         is_remaining_gas_lt_initial_budget,
         "memory[ap] = to_felt_or_relocatable(ids.remaining_gas < ids.ENTRY_POINT_INITIAL_BUDGET)"
     ),
-    (CheckSyscallResponse, check_syscall_response, indoc! {r#"
+    (
+        CheckSyscallResponse,
+        check_syscall_response,
+        indoc! {r#"
 	# Check that the actual return value matches the expected one.
 	expected = memory.get_range(
 	    addr=ids.call_response.retdata, size=ids.call_response.retdata_size
@@ -829,8 +1073,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
 	actual = memory.get_range(addr=ids.retdata, size=ids.retdata_size)
 
 	assert expected == actual, f'Return value mismatch expected={expected}, actual={actual}.'"#
-    }),
-    (CheckNewSyscallResponse, check_new_syscall_response, indoc! {r#"
+        }
+    ),
+    (
+        CheckNewSyscallResponse,
+        check_new_syscall_response,
+        indoc! {r#"
 	# Check that the actual return value matches the expected one.
 	expected = memory.get_range(
 	    addr=ids.response.retdata_start,
@@ -839,8 +1087,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
 	actual = memory.get_range(addr=ids.retdata, size=ids.retdata_size)
 
 	assert expected == actual, f'Return value mismatch; expected={expected}, actual={actual}.'"#
-    }),
-    (CheckNewDeployResponse, check_new_deploy_response, indoc! {r#"
+        }
+    ),
+    (
+        CheckNewDeployResponse,
+        check_new_deploy_response,
+        indoc! {r#"
 	# Check that the actual return value matches the expected one.
 	expected = memory.get_range(
 	    addr=ids.response.constructor_retdata_start,
@@ -848,8 +1100,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
 	)
 	actual = memory.get_range(addr=ids.retdata, size=ids.retdata_size)
 	assert expected == actual, f'Return value mismatch; expected={expected}, actual={actual}.'"#
-    }),
-    (LogEnterSyscall, log_enter_syscall, indoc! {r#"
+        }
+    ),
+    (
+        LogEnterSyscall,
+        log_enter_syscall,
+        indoc! {r#"
     execution_helper.os_logger.enter_syscall(
         n_steps=current_step,
         builtin_ptrs=ids.builtin_ptrs,
@@ -865,7 +1121,8 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         range_check_ptr=ids.range_check_ptr,
         selector=ids.selector,
     )"#
-    }),
+        }
+    ),
     (
         InitialGeRequiredGas,
         initial_ge_required_gas,
@@ -878,19 +1135,31 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         "memory[fp + 4] = to_felt_or_relocatable(tx.nonce)"
     ),
     (EnterScopeNode, enter_scope_node, "vm_enter_scope(dict(node=node, **common_args))"),
-    (EnterScopeNewNode, enter_scope_new_node, indoc! {r#"
+    (
+        EnterScopeNewNode,
+        enter_scope_new_node,
+        indoc! {r#"
 	ids.child_bit = 0 if case == 'left' else 1
 	new_node = left_child if case == 'left' else right_child
 	vm_enter_scope(dict(node=new_node, **common_args))"#
-    }),
-    (EnterScopeNextNodeBit0, enter_scope_next_node_bit_0, indoc! {r#"
+        }
+    ),
+    (
+        EnterScopeNextNodeBit0,
+        enter_scope_next_node_bit_0,
+        indoc! {r#"
 	new_node = left_child if ids.bit == 0 else right_child
 	vm_enter_scope(dict(node=new_node, **common_args))"#
-    }),
-    (EnterScopeNextNodeBit1, enter_scope_next_node_bit_1, indoc! {r#"
+        }
+    ),
+    (
+        EnterScopeNextNodeBit1,
+        enter_scope_next_node_bit_1,
+        indoc! {r#"
 	new_node = left_child if ids.bit == 1 else right_child
 	vm_enter_scope(dict(node=new_node, **common_args))"#
-    }),
+        }
+    ),
     (
         EnterScopeLeftChild,
         enter_scope_left_child,
@@ -901,13 +1170,20 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         enter_scope_right_child,
         "vm_enter_scope(dict(node=right_child, **common_args))"
     ),
-    (EnterScopeDescendEdge, enter_scope_descend_edge, indoc! {r#"
+    (
+        EnterScopeDescendEdge,
+        enter_scope_descend_edge,
+        indoc! {r#"
 	new_node = node
 	for i in range(ids.length - 1, -1, -1):
 	    new_node = new_node[(ids.word >> i) & 1]
 	vm_enter_scope(dict(node=new_node, **common_args))"#
-    }),
-    (WriteSyscallResultDeprecated, write_syscall_result_deprecated, indoc! {r#"
+        }
+    ),
+    (
+        WriteSyscallResultDeprecated,
+        write_syscall_result_deprecated,
+        indoc! {r#"
 	storage = execution_helper.storage_by_address[ids.contract_address]
 	ids.prev_value = storage.read(key=ids.syscall_ptr.address)
 	storage.write(key=ids.syscall_ptr.address, value=ids.syscall_ptr.value)
@@ -916,8 +1192,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
 	ids.state_entry = __dict_manager.get_dict(ids.contract_state_changes)[ids.contract_address]
 
 	ids.new_state_entry = segments.add()"#
-    }),
-    (WriteSyscallResult, write_syscall_result, indoc! {r#"
+        }
+    ),
+    (
+        WriteSyscallResult,
+        write_syscall_result,
+        indoc! {r#"
     storage = execution_helper.storage_by_address[ids.contract_address]
     ids.prev_value = storage.read(key=ids.request.key)
     storage.write(key=ids.request.key, value=ids.request.value)
@@ -925,8 +1205,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
     # Fetch a state_entry in this hint and validate it in the update that comes next.
     ids.state_entry = __dict_manager.get_dict(ids.contract_state_changes)[ids.contract_address]
     ids.new_state_entry = segments.add()"#
-    }),
-    (GenClassHashArg, gen_class_hash_arg, indoc! {r#"
+        }
+    ),
+    (
+        GenClassHashArg,
+        gen_class_hash_arg,
+        indoc! {r#"
     ids.tx_version = tx.version
     ids.sender_address = tx.sender_address
     ids.class_hash_ptr = segments.gen_arg([tx.class_hash])
@@ -940,17 +1224,26 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
             "Declare must have a concrete compiled_class_hash."
         )
         ids.compiled_class_hash = tx.compiled_class_hash"#
-    }),
-    (WriteOldBlockToStorage, write_old_block_to_storage, indoc! {r#"
+        }
+    ),
+    (
+        WriteOldBlockToStorage,
+        write_old_block_to_storage,
+        indoc! {r#"
 	storage = execution_helper.storage_by_address[ids.BLOCK_HASH_CONTRACT_ADDRESS]
 	storage.write(key=ids.old_block_number, value=ids.old_block_hash)"#
-    }),
-    (CacheContractStorageRequestKey, cache_contract_storage_request_key, indoc! {r#"
+        }
+    ),
+    (
+        CacheContractStorageRequestKey,
+        cache_contract_storage_request_key,
+        indoc! {r#"
 	# Make sure the value is cached (by reading it), to be used later on for the
 	# commitment computation.
 	value = execution_helper.storage_by_address[ids.contract_address].read(key=ids.request.key)
 	assert ids.value == value, "Inconsistent storage value.""#
-    }),
+        }
+    ),
     (
         CacheContractStorageSyscallRequestAddress,
         cache_contract_storage_syscall_request_address,
@@ -963,7 +1256,10 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
 	assert ids.value == value, "Inconsistent storage value.""#
         }
     ),
-    (GetOldBlockNumberAndHash, get_old_block_number_and_hash, indoc! {r#"
+    (
+        GetOldBlockNumberAndHash,
+        get_old_block_number_and_hash,
+        indoc! {r#"
         old_block_number_and_hash = program_input['old_block_number_and_hash']
         assert (
             old_block_number_and_hash is not None
@@ -975,8 +1271,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
             "Inconsistent block number. "
             "The constant STORED_BLOCK_HASH_BUFFER is probably out of sync."
         )
-        ids.old_block_hash = old_block_hash"#}),
-    (FetchResult, fetch_result, indoc! {r#"
+        ids.old_block_hash = old_block_hash"#}
+    ),
+    (
+        FetchResult,
+        fetch_result,
+        indoc! {r#"
     # Fetch the result, up to 100 elements.
     result = memory.get_range(ids.retdata, min(100, ids.retdata_size))
 
@@ -984,8 +1284,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         print("Invalid return value from __validate__:")
         print(f"  Size: {ids.retdata_size}")
         print(f"  Result (at most 100 elements): {result}")"#
-    }),
-    (SearchSortedOptimistic, search_sorted_optimistic, indoc! {r#"array_ptr = ids.array_ptr
+        }
+    ),
+    (
+        SearchSortedOptimistic,
+        search_sorted_optimistic,
+        indoc! {r#"array_ptr = ids.array_ptr
     elm_size = ids.elm_size
     assert isinstance(elm_size, int) and elm_size > 0, \
         f'Invalid value for elm_size. Got: {elm_size}.'
@@ -995,7 +1299,7 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         f'Invalid value for n_elms. Got: {n_elms}.'
     if '__find_element_max_size' in globals():
         assert n_elms <= __find_element_max_size, \
-        f'find_element() can only be used with n_elms<={__find_element_max_size}. ' \
+            f'find_element() can only be used with n_elms<={__find_element_max_size}. ' \
             f'Got: n_elms={n_elms}.'
 
     for i in range(n_elms):
@@ -1005,8 +1309,12 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
             break
     else:
         ids.index = n_elms
-        ids.exists = 0"#}),
-    (StoreDaSegment, store_da_segment, indoc! {r#"import itertools
+        ids.exists = 0"#}
+    ),
+    (
+        StoreDaSegment,
+        store_da_segment,
+        indoc! {r#"import itertools
 
     from starkware.python.utils import blockify
 
@@ -1022,10 +1330,15 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
     ids.kzg_commitments = segments.add_temp_segment()
     ids.evals = segments.add_temp_segment()
 
-    segments.write_arg(ids.kzg_commitments.address_, list(itertools.chain(*kzg_commitments)))"#}),
-    (Log2Ceil, log2_ceil, indoc! {r#"from starkware.python.math_utils import log2_ceil
-        ids.res = log2_ceil(ids.value)"#
-    }),
+    segments.write_arg(ids.kzg_commitments.address_, list(itertools.chain(*kzg_commitments)))"#}
+    ),
+    (
+        Log2Ceil,
+        log2_ceil,
+        indoc! {r#"from starkware.python.math_utils import log2_ceil
+            ids.res = log2_ceil(ids.value)"#
+        }
+    ),
     (
         WriteFullOutputToMemory,
         write_full_output_to_memory,
@@ -1093,11 +1406,15 @@ segments.write_arg(ids.sha256_ptr_end, padding)"#}),
         # Assign a temporary segment, to be relocated into the output segment.
         ids.state_updates_start = segments.add_temp_segment()"#}
     ),
-    (SetCompressedStart, set_compressed_start, indoc! {r#"if use_kzg_da:
+    (
+        SetCompressedStart,
+        set_compressed_start,
+        indoc! {r#"if use_kzg_da:
     ids.compressed_start = segments.add()
 else:
     # Assign a temporary segment, to be relocated into the output segment.
-    ids.compressed_start = segments.add_temp_segment()"#}),
+    ids.compressed_start = segments.add_temp_segment()"#}
+    ),
     (
         SetNUpdatesSmall,
         set_n_updates_small,
@@ -1106,14 +1423,22 @@ else:
     (SetSiblings, set_siblings, "memory[ids.siblings], ids.word = descend"),
     (IsCaseRight, is_case_right, "memory[ap] = int(case == 'right') ^ ids.bit"),
     (SetBit, set_bit, "ids.bit = (ids.edge.path >> ids.new_length) & 1"),
-    (SetApToDescend, set_ap_to_descend, indoc! {r#"
+    (
+        SetApToDescend,
+        set_ap_to_descend,
+        indoc! {r#"
 	descend = descent_map.get((ids.height, ids.path))
 	memory[ap] = 0 if descend is None else 1"#
-    }),
+        }
+    ),
     (AssertCaseIsRight, assert_case_is_right, "assert case == 'right'"),
-    (WriteCaseNotLeftToAp, write_case_not_left_to_ap, indoc! {r#"
-        memory[ap] = int(case != 'left')"#
-    }),
+    (
+        WriteCaseNotLeftToAp,
+        write_case_not_left_to_ap,
+        indoc! {r#"
+            memory[ap] = int(case != 'left')"#
+        }
+    ),
     (SplitDescend, split_descend, "ids.length, ids.word = descend"),
     (
         HeightIsZeroOrLenNodePreimageIsTwo,
@@ -1142,7 +1467,10 @@ else:
 	memory[ap] = int(case != 'both')"#
         }
     ),
-    (BuildDescentMap, build_descent_map, indoc! {r#"
+    (
+        BuildDescentMap,
+        build_descent_map,
+        indoc! {r#"
 	from starkware.cairo.common.patricia_utils import canonic, patricia_guess_descents
 	from starkware.python.merkle_tree import build_update_tree
 
@@ -1168,20 +1496,25 @@ else:
 	    preimage=preimage, descent_map=descent_map,
 	    __patricia_skip_validation_runner=__patricia_skip_validation_runner)
 	common_args['common_args'] = common_args"#
-    }),
+        }
+    ),
     (
         RemainingGasGtMax,
         remaining_gas_gt_max,
         "memory[ap] = to_felt_or_relocatable(ids.remaining_gas > ids.max_gas)"
     ),
-    (DebugExpectedInitialGas, debug_expected_initial_gas, indoc! {r#"
+    (
+        DebugExpectedInitialGas,
+        debug_expected_initial_gas,
+        indoc! {r#"
     if execution_helper.debug_mode:
         expected_initial_gas = execution_helper.call_info.call.initial_gas
         call_initial_gas = ids.remaining_gas
         assert expected_initial_gas == call_initial_gas, (
             f"Expected remaining_gas {expected_initial_gas}. Got: {call_initial_gas}.\n"
             f"{execution_helper.call_info=}"
-        )"#}),
+        )"#}
+    ),
     (
         IsSierraGasMode,
         is_sierra_gas_mode,
@@ -1192,7 +1525,10 @@ else:
         read_ec_point_from_address,
         r#"memory[ap] = to_felt_or_relocatable(ids.response.ec_point.address_ if ids.not_on_curve == 0 else segments.add())"#
     ),
-    (SetPreimageForStateCommitments, set_preimage_for_state_commitments, indoc! {r#"
+    (
+        SetPreimageForStateCommitments,
+        set_preimage_for_state_commitments,
+        indoc! {r#"
 	ids.initial_root = os_input.contract_state_commitment_info.previous_root
 	ids.final_root = os_input.contract_state_commitment_info.updated_root
 	preimage = {
@@ -1200,8 +1536,12 @@ else:
 	    for root, children in os_input.contract_state_commitment_info.commitment_facts.items()
 	}
 	assert os_input.contract_state_commitment_info.tree_height == ids.MERKLE_HEIGHT"#
-    }),
-    (SetPreimageForClassCommitments, set_preimage_for_class_commitments, indoc! {r#"
+        }
+    ),
+    (
+        SetPreimageForClassCommitments,
+        set_preimage_for_class_commitments,
+        indoc! {r#"
 	ids.initial_root = os_input.contract_class_commitment_info.previous_root
 	ids.final_root = os_input.contract_class_commitment_info.updated_root
 	preimage = {
@@ -1209,8 +1549,12 @@ else:
 	    for root, children in os_input.contract_class_commitment_info.commitment_facts.items()
 	}
 	assert os_input.contract_class_commitment_info.tree_height == ids.MERKLE_HEIGHT"#
-    }),
-    (SetPreimageForCurrentCommitmentInfo, set_preimage_for_current_commitment_info, indoc! {r#"
+        }
+    ),
+    (
+        SetPreimageForCurrentCommitmentInfo,
+        set_preimage_for_current_commitment_info,
+        indoc! {r#"
 	commitment_info = commitment_info_by_address[ids.contract_address]
 	ids.initial_contract_state_root = commitment_info.previous_root
 	ids.final_contract_state_root = commitment_info.updated_root
@@ -1219,8 +1563,12 @@ else:
 	    for root, children in commitment_info.commitment_facts.items()
 	}
 	assert commitment_info.tree_height == ids.MERKLE_HEIGHT"#
-    }),
-    (LoadEdge, load_edge, indoc! {r#"
+        }
+    ),
+    (
+        LoadEdge,
+        load_edge,
+        indoc! {r#"
 	ids.edge = segments.add()
 	ids.edge.length, ids.edge.path, ids.edge.bottom = preimage[ids.node]
 	ids.hash_ptr.result = ids.node - ids.edge.length
@@ -1229,36 +1577,57 @@ else:
 	    # mistakes in the preimage dict will be discovered only in the prover.
 	    __patricia_skip_validation_runner.verified_addresses.add(
 	        ids.hash_ptr + ids.HashBuiltin.result)"#
-    }),
-    (LoadBottom, load_bottom, indoc! {r#"
+        }
+    ),
+    (
+        LoadBottom,
+        load_bottom,
+        indoc! {r#"
 	ids.hash_ptr.x, ids.hash_ptr.y = preimage[ids.edge.bottom]
 	if __patricia_skip_validation_runner:
 	    # Skip validation of the preimage dict to speed up the VM. When this flag is
 	    # set, mistakes in the preimage dict will be discovered only in the prover.
 	    __patricia_skip_validation_runner.verified_addresses.add(
 	        ids.hash_ptr + ids.HashBuiltin.result)"#
-    }),
-    (DecodeNode, decode_node, indoc! {r#"
+        }
+    ),
+    (
+        DecodeNode,
+        decode_node,
+        indoc! {r#"
 	from starkware.python.merkle_tree import decode_node
 	left_child, right_child, case = decode_node(node)
 	memory[ap] = int(case != 'both')"#
-    }),
-    (DecodeNode2, decode_node, indoc! {r#"
+        }
+    ),
+    (
+        DecodeNode2,
+        decode_node,
+        indoc! {r#"
 from starkware.python.merkle_tree import decode_node
 left_child, right_child, case = decode_node(node)
 memory[ap] = 1 if case != 'both' else 0"#
-    }),
-    (WriteSplitResult, write_split_result, indoc! {r#"
+        }
+    ),
+    (
+        WriteSplitResult,
+        write_split_result,
+        indoc! {r#"
     from starkware.starknet.core.os.data_availability.bls_utils import split
 
     segments.write_arg(ids.res.address_, split(ids.value))"#
-    }),
-    (SetSyscallPtr, set_syscall_ptr, indoc! {r#"
+        }
+    ),
+    (
+        SetSyscallPtr,
+        set_syscall_ptr,
+        indoc! {r#"
 	ids.os_context = segments.add()
 	ids.syscall_ptr = segments.add()
 
 	syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)"#
-    }),
+        }
+    ),
     (
         OsLoggerEnterSyscallPrepareExitSyscall,
         os_logger_enter_syscall_prepare_exit_syscall,
@@ -1281,22 +1650,37 @@ memory[ap] = 1 if case != 'both' else 0"#
         }
     ),
     (OsLoggerExitSyscall, os_logger_exit_syscall, "exit_syscall()"),
-    (AdditionalDataNewSegment, additional_data_new_segment, indoc! {r#"
-        ids.additional_data = segments.add()"#
-    }),
-    (DataToHashNewSegment, data_to_hash_new_segment, indoc! {r#"
-    ids.data_to_hash = segments.add()"#
-    }),
+    (
+        AdditionalDataNewSegment,
+        additional_data_new_segment,
+        indoc! {r#"
+            ids.additional_data = segments.add()"#
+        }
+    ),
+    (
+        DataToHashNewSegment,
+        data_to_hash_new_segment,
+        indoc! {r#"
+        ids.data_to_hash = segments.add()"#
+        }
+    ),
     (IsOnCurve, is_on_curve, "ids.is_on_curve = (y * y) % SECP_P == y_square_int"),
-    (StarknetOsInput, starknet_os_input, indoc! {r#"
+    (
+        StarknetOsInput,
+        starknet_os_input,
+        indoc! {r#"
     from starkware.starknet.core.os.os_input import StarknetOsInput
 
     os_input = StarknetOsInput.load(data=program_input)
 
     ids.initial_carried_outputs.messages_to_l1 = segments.add_temp_segment()
     ids.initial_carried_outputs.messages_to_l2 = segments.add_temp_segment()"#
-    }),
-    (InitializeStateChanges, initialize_state_changes, indoc! {r#"
+        }
+    ),
+    (
+        InitializeStateChanges,
+        initialize_state_changes,
+        indoc! {r#"
     from starkware.python.utils import from_bytes
 
     initial_dict = {
@@ -1304,7 +1688,8 @@ memory[ap] = 1 if case != 'both' else 0"#
             (from_bytes(contract.contract_hash), segments.add(), contract.nonce))
         for address, contract in os_input.contracts.items()
     }"#
-    }),
+        }
+    ),
     (
         InitializeClassHashes,
         initialize_class_hashes,
@@ -1314,7 +1699,10 @@ memory[ap] = 1 if case != 'both' else 0"#
 
 define_hint_extension_enum!(
     HintExtension,
-    (LoadClass, load_class, indoc! {r#"
+    (
+        LoadClass,
+        load_class,
+        indoc! {r#"
     vm_exit_scope()
 
     computed_hash = ids.hash
@@ -1322,8 +1710,12 @@ define_hint_extension_enum!(
     assert computed_hash == expected_hash, (
         "Computed compiled_class_hash is inconsistent with the hash in the os_input. "
         f"Computed hash = {computed_hash}, Expected hash = {expected_hash}.")"#
-    }),
-    (LoadDeprecatedClass, load_deprecated_class, indoc! {r#"
+        }
+    ),
+    (
+        LoadDeprecatedClass,
+        load_deprecated_class,
+        indoc! {r#"
     from starkware.python.utils import from_bytes
 
     computed_hash = ids.compiled_class_fact.hash
@@ -1333,5 +1725,6 @@ define_hint_extension_enum!(
         f"Computed hash = {computed_hash}, Expected hash = {expected_hash}.")
 
     vm_load_program(compiled_class.program, ids.compiled_class.bytecode_ptr)"#
-    })
+        }
+    )
 );

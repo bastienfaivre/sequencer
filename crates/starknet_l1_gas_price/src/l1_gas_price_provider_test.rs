@@ -2,7 +2,9 @@ use papyrus_base_layer::PriceSample;
 use starknet_api::block::{BlockNumber, BlockTimestamp};
 
 use crate::l1_gas_price_provider::{
-    L1GasPriceProvider, L1GasPriceProviderConfig, L1GasPriceProviderError,
+    L1GasPriceProvider,
+    L1GasPriceProviderConfig,
+    L1GasPriceProviderError,
 };
 
 // Make a provider with five samples. Timestamps are 2 seconds apart, starting from 0.

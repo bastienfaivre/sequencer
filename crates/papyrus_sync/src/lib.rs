@@ -17,11 +17,11 @@ use async_stream::try_stream;
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractClass;
 use chrono::{TimeZone, Utc};
 use futures::stream;
-use futures_util::{Stream, StreamExt, pin_mut, select};
+use futures_util::{pin_mut, select, Stream, StreamExt};
 use indexmap::IndexMap;
 use papyrus_common::pending_classes::PendingClasses;
 use papyrus_config::converters::deserialize_seconds_to_duration;
-use papyrus_config::dumping::{SerializeConfig, ser_param};
+use papyrus_config::dumping::{ser_param, SerializeConfig};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_proc_macros::latency_histogram;
 use papyrus_storage::base_layer::{BaseLayerStorageReader, BaseLayerStorageWriter};
@@ -42,8 +42,13 @@ use starknet_api::state::{StateDiff, ThinStateDiff};
 use starknet_class_manager_types::{ClassManagerClientError, SharedClassManagerClient};
 use starknet_client::reader::PendingData;
 use starknet_sequencer_metrics::metric_definitions::{
-    SYNC_BASE_LAYER_MARKER, SYNC_BODY_MARKER, SYNC_CENTRAL_BLOCK_MARKER,
-    SYNC_COMPILED_CLASS_MARKER, SYNC_HEADER_LATENCY_SEC, SYNC_HEADER_MARKER, SYNC_STATE_MARKER,
+    SYNC_BASE_LAYER_MARKER,
+    SYNC_BODY_MARKER,
+    SYNC_CENTRAL_BLOCK_MARKER,
+    SYNC_COMPILED_CLASS_MARKER,
+    SYNC_HEADER_LATENCY_SEC,
+    SYNC_HEADER_MARKER,
+    SYNC_STATE_MARKER,
 };
 use tokio::sync::RwLock;
 use tracing::{debug, error, info, instrument, trace, warn};

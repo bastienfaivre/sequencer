@@ -24,7 +24,12 @@ use tracing::{debug, info, instrument, trace, warn};
 use crate::config::TimeoutsConfig;
 use crate::state_machine::{StateMachine, StateMachineEvent};
 use crate::types::{
-    ConsensusContext, ConsensusError, Decision, ProposalCommitment, Round, ValidatorId,
+    ConsensusContext,
+    ConsensusError,
+    Decision,
+    ProposalCommitment,
+    Round,
+    ValidatorId,
 };
 
 /// The SHC can either update the manager of a decision or return tasks that should be run without

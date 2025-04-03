@@ -2,37 +2,44 @@ use std::future::Future;
 use std::net::SocketAddr;
 use std::time::Duration;
 
-use axum::Router;
 use axum::http::StatusCode;
 use axum::routing::post;
+use axum::Router;
 use blockifier::blockifier::config::TransactionExecutorConfig;
 use blockifier::bouncer::{BouncerConfig, BouncerWeights};
 use blockifier::context::ChainInfo;
 use blockifier_test_utils::cairo_versions::{CairoVersion, RunnableCairo1};
 use blockifier_test_utils::contracts::FeatureContract;
 use mempool_test_utils::starknet_api_test_utils::{
-    AccountId, AccountTransactionGenerator, Contract, MultiAccountTransactionGenerator,
+    AccountId,
+    AccountTransactionGenerator,
+    Contract,
+    MultiAccountTransactionGenerator,
 };
-use papyrus_network::NetworkConfig;
 use papyrus_network::network_manager::test_utils::create_connected_network_configs;
+use papyrus_network::NetworkConfig;
 use papyrus_storage::StorageConfig;
 use starknet_api::block::BlockNumber;
 use starknet_api::core::ChainId;
 use starknet_api::rpc_transaction::RpcTransaction;
-use starknet_api::transaction::TransactionHash;
 use starknet_api::transaction::fields::ContractAddressSalt;
+use starknet_api::transaction::TransactionHash;
 use starknet_batcher::block_builder::BlockBuilderConfig;
 use starknet_batcher::config::BatcherConfig;
 use starknet_class_manager::class_storage::CachedClassStorageConfig;
 use starknet_class_manager::config::{
-    ClassManagerConfig, FsClassManagerConfig, FsClassStorageConfig,
+    ClassManagerConfig,
+    FsClassManagerConfig,
+    FsClassStorageConfig,
 };
 use starknet_consensus::config::{ConsensusConfig, TimeoutsConfig};
 use starknet_consensus::types::{ContextConfig, ValidatorId};
 use starknet_consensus_manager::config::ConsensusManagerConfig;
 use starknet_consensus_orchestrator::cende::{CendeConfig, RECORDER_WRITE_BLOB_PATH};
 use starknet_gateway::config::{
-    GatewayConfig, StatefulTransactionValidatorConfig, StatelessTransactionValidatorConfig,
+    GatewayConfig,
+    StatefulTransactionValidatorConfig,
+    StatelessTransactionValidatorConfig,
 };
 use starknet_http_server::test_utils::create_http_server_config;
 use starknet_infra_utils::test_utils::AvailablePorts;
@@ -40,13 +47,14 @@ use starknet_mempool_p2p::config::MempoolP2pConfig;
 use starknet_monitoring_endpoint::config::MonitoringEndpointConfig;
 use starknet_sequencer_node::config::component_config::ComponentConfig;
 use starknet_sequencer_node::config::config_utils::{
-    EthereumBaseLayerConfigRequiredParams, RequiredParams,
+    EthereumBaseLayerConfigRequiredParams,
+    RequiredParams,
 };
 use starknet_sequencer_node::config::node_config::SequencerNodeConfig;
 use starknet_state_sync::config::StateSyncConfig;
 use starknet_types_core::felt::Felt;
 use tokio::task::JoinHandle;
-use tracing::{Instrument, debug, info};
+use tracing::{debug, info, Instrument};
 use url::Url;
 
 use crate::integration_test_setup::NodeExecutionId;

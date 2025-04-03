@@ -1,5 +1,7 @@
 use blockifier::blockifier::transaction_executor::{
-    BlockExecutionSummary, TransactionExecutor, TransactionExecutorResult,
+    BlockExecutionSummary,
+    TransactionExecutor,
+    TransactionExecutorResult,
 };
 use blockifier::state::state_api::StateReader;
 use blockifier::transaction::objects::TransactionExecutionInfo;

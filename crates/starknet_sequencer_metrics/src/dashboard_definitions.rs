@@ -1,10 +1,19 @@
 use crate::dashboard::{Dashboard, Panel, PanelType, Row};
 use crate::metric_definitions::{
-    ADDED_TRANSACTIONS_TOTAL, BATCHED_TRANSACTIONS, CONSENSUS_NUM_CONNECTED_PEERS,
-    CONSENSUS_NUM_RECEIVED_MESSAGES, CONSENSUS_NUM_SENT_MESSAGES, MEMPOOL_P2P_NUM_CONNECTED_PEERS,
-    MEMPOOL_P2P_NUM_RECEIVED_MESSAGES, MEMPOOL_P2P_NUM_SENT_MESSAGES, PROPOSAL_FAILED,
-    PROPOSAL_STARTED, PROPOSAL_SUCCEEDED, STATE_SYNC_P2P_NUM_ACTIVE_INBOUND_SESSIONS,
-    STATE_SYNC_P2P_NUM_ACTIVE_OUTBOUND_SESSIONS, STATE_SYNC_P2P_NUM_CONNECTED_PEERS,
+    ADDED_TRANSACTIONS_TOTAL,
+    BATCHED_TRANSACTIONS,
+    CONSENSUS_NUM_CONNECTED_PEERS,
+    CONSENSUS_NUM_RECEIVED_MESSAGES,
+    CONSENSUS_NUM_SENT_MESSAGES,
+    MEMPOOL_P2P_NUM_CONNECTED_PEERS,
+    MEMPOOL_P2P_NUM_RECEIVED_MESSAGES,
+    MEMPOOL_P2P_NUM_SENT_MESSAGES,
+    PROPOSAL_FAILED,
+    PROPOSAL_STARTED,
+    PROPOSAL_SUCCEEDED,
+    STATE_SYNC_P2P_NUM_ACTIVE_INBOUND_SESSIONS,
+    STATE_SYNC_P2P_NUM_ACTIVE_OUTBOUND_SESSIONS,
+    STATE_SYNC_P2P_NUM_CONNECTED_PEERS,
 };
 
 const PANEL_ADDED_TRANSACTIONS_TOTAL: Panel = Panel::new(
@@ -102,35 +111,51 @@ const PANEL_STATE_SYNC_P2P_NUM_ACTIVE_OUTBOUND_SESSIONS: Panel = Panel::new(
     PanelType::Stat,
 );
 
-const MEMPOOL_P2P_ROW: Row<'_> = Row::new("MempoolP2p", "Mempool peer to peer metrics", &[
-    PANEL_MEMPOOL_P2P_NUM_CONNECTED_PEERS,
-    PANEL_MEMPOOL_P2P_NUM_SENT_MESSAGES,
-    PANEL_MEMPOOL_P2P_NUM_RECEIVED_MESSAGES,
-]);
+const MEMPOOL_P2P_ROW: Row<'_> = Row::new(
+    "MempoolP2p",
+    "Mempool peer to peer metrics",
+    &[
+        PANEL_MEMPOOL_P2P_NUM_CONNECTED_PEERS,
+        PANEL_MEMPOOL_P2P_NUM_SENT_MESSAGES,
+        PANEL_MEMPOOL_P2P_NUM_RECEIVED_MESSAGES,
+    ],
+);
 
-const CONSENSUS_P2P_ROW: Row<'_> = Row::new("ConsensusP2p", "Consensus peer to peer metrics", &[
-    PANEL_CONSENSUS_NUM_CONNECTED_PEERS,
-    PANEL_CONSENSUS_NUM_SENT_MESSAGES,
-    PANEL_CONSENSUS_NUM_RECEIVED_MESSAGES,
-]);
+const CONSENSUS_P2P_ROW: Row<'_> = Row::new(
+    "ConsensusP2p",
+    "Consensus peer to peer metrics",
+    &[
+        PANEL_CONSENSUS_NUM_CONNECTED_PEERS,
+        PANEL_CONSENSUS_NUM_SENT_MESSAGES,
+        PANEL_CONSENSUS_NUM_RECEIVED_MESSAGES,
+    ],
+);
 
-const STATE_SYNC_P2P_ROW: Row<'_> = Row::new("StateSyncP2p", "State sync peer to peer metrics", &[
-    PANEL_STATE_SYNC_P2P_NUM_CONNECTED_PEERS,
-    PANEL_STATE_SYNC_P2P_NUM_ACTIVE_INBOUND_SESSIONS,
-    PANEL_STATE_SYNC_P2P_NUM_ACTIVE_OUTBOUND_SESSIONS,
-]);
+const STATE_SYNC_P2P_ROW: Row<'_> = Row::new(
+    "StateSyncP2p",
+    "State sync peer to peer metrics",
+    &[
+        PANEL_STATE_SYNC_P2P_NUM_CONNECTED_PEERS,
+        PANEL_STATE_SYNC_P2P_NUM_ACTIVE_INBOUND_SESSIONS,
+        PANEL_STATE_SYNC_P2P_NUM_ACTIVE_OUTBOUND_SESSIONS,
+    ],
+);
 
-const BATCHER_ROW: Row<'_> =
-    Row::new("Batcher", "Batcher metrics including proposals and transactions", &[
+const BATCHER_ROW: Row<'_> = Row::new(
+    "Batcher",
+    "Batcher metrics including proposals and transactions",
+    &[
         PANEL_PROPOSAL_STARTED,
         PANEL_PROPOSAL_SUCCEEDED,
         PANEL_PROPOSAL_FAILED,
         PANEL_BATCHED_TRANSACTIONS,
-    ]);
-const HTTP_SERVER_ROW: Row<'_> =
-    Row::new("Http Server", "Http Server metrics including added transactions", &[
-        PANEL_ADDED_TRANSACTIONS_TOTAL,
-    ]);
+    ],
+);
+const HTTP_SERVER_ROW: Row<'_> = Row::new(
+    "Http Server",
+    "Http Server metrics including added transactions",
+    &[PANEL_ADDED_TRANSACTIONS_TOTAL],
+);
 
 pub const SEQUENCER_DASHBOARD: Dashboard<'_> = Dashboard::new(
     "Sequencer Node Dashboard",

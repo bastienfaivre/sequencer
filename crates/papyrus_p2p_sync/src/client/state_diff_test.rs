@@ -3,19 +3,30 @@ use std::collections::HashMap;
 use futures::FutureExt;
 use indexmap::indexmap;
 use papyrus_protobuf::sync::{
-    BlockHashOrNumber, ContractDiff, DataOrFin, DeclaredClass, DeprecatedDeclaredClass, Direction,
-    Query, StateDiffChunk,
+    BlockHashOrNumber,
+    ContractDiff,
+    DataOrFin,
+    DeclaredClass,
+    DeprecatedDeclaredClass,
+    Direction,
+    Query,
+    StateDiffChunk,
 };
 use papyrus_storage::state::StateStorageReader;
 use papyrus_test_utils::get_rng;
 use starknet_api::block::BlockNumber;
-use starknet_api::core::{ClassHash, CompiledClassHash, ContractAddress, Nonce, ascii_as_felt};
+use starknet_api::core::{ascii_as_felt, ClassHash, CompiledClassHash, ContractAddress, Nonce};
 use starknet_api::state::{StorageKey, ThinStateDiff};
 use starknet_types_core::felt::Felt;
 
 use super::test_utils::{
-    Action, DataType, SLEEP_DURATION_TO_LET_SYNC_ADVANCE, TIMEOUT_FOR_TEST, random_header,
-    run_test, wait_for_marker,
+    random_header,
+    run_test,
+    wait_for_marker,
+    Action,
+    DataType,
+    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+    TIMEOUT_FOR_TEST,
 };
 
 #[tokio::test]
@@ -127,12 +138,15 @@ async fn state_diff_basic_flow() {
     let len = state_diffs_and_chunks.len();
     actions.push(Action::ReceiveQuery(
         Box::new(move |query| {
-            assert_eq!(query, Query {
-                start_block: BlockHashOrNumber::Number(BlockNumber(0)),
-                direction: Direction::Forward,
-                limit: len.try_into().unwrap(),
-                step: 1,
-            })
+            assert_eq!(
+                query,
+                Query {
+                    start_block: BlockHashOrNumber::Number(BlockNumber(0)),
+                    direction: Direction::Forward,
+                    limit: len.try_into().unwrap(),
+                    step: 1,
+                }
+            )
         }),
         DataType::StateDiff,
     ));
@@ -198,10 +212,13 @@ async fn state_diff_empty_state_diff() {
 // returned from parse_data_for_block. We currently dont have a way to check this.
 #[tokio::test]
 async fn state_diff_stopped_in_middle() {
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass::default())),
-        None,
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass::default())),
+            None,
+        ],
+    )
     .await;
 }
 
@@ -209,15 +226,18 @@ async fn state_diff_stopped_in_middle() {
 // returned from parse_data_for_block. We currently dont have a way to check this.
 #[tokio::test]
 async fn state_diff_not_split_correctly() {
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass::default())),
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            class_hash: Some(ClassHash::default()),
-            nonce: Some(Nonce::default()),
-            ..Default::default()
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass::default())),
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                class_hash: Some(ClassHash::default()),
+                nonce: Some(Nonce::default()),
+                ..Default::default()
+            })),
+        ],
+    )
     .await;
 }
 
@@ -225,64 +245,79 @@ async fn state_diff_not_split_correctly() {
 // was returned from parse_data_for_block. We currently dont have a way to check this.
 #[tokio::test]
 async fn state_diff_conflicting() {
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            class_hash: Some(ClassHash::default()),
-            ..Default::default()
-        })),
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            class_hash: Some(ClassHash::default()),
-            ..Default::default()
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                class_hash: Some(ClassHash::default()),
+                ..Default::default()
+            })),
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                class_hash: Some(ClassHash::default()),
+                ..Default::default()
+            })),
+        ],
+    )
     .await;
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            storage_diffs: indexmap! { StorageKey::default() => Felt::default() },
-            ..Default::default()
-        })),
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            storage_diffs: indexmap! { StorageKey::default() => Felt::default() },
-            ..Default::default()
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                storage_diffs: indexmap! { StorageKey::default() => Felt::default() },
+                ..Default::default()
+            })),
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                storage_diffs: indexmap! { StorageKey::default() => Felt::default() },
+                ..Default::default()
+            })),
+        ],
+    )
     .await;
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::DeclaredClass(DeclaredClass {
-            class_hash: ClassHash::default(),
-            compiled_class_hash: CompiledClassHash::default(),
-        })),
-        Some(StateDiffChunk::DeclaredClass(DeclaredClass {
-            class_hash: ClassHash::default(),
-            compiled_class_hash: CompiledClassHash::default(),
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::DeclaredClass(DeclaredClass {
+                class_hash: ClassHash::default(),
+                compiled_class_hash: CompiledClassHash::default(),
+            })),
+            Some(StateDiffChunk::DeclaredClass(DeclaredClass {
+                class_hash: ClassHash::default(),
+                compiled_class_hash: CompiledClassHash::default(),
+            })),
+        ],
+    )
     .await;
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass {
-            class_hash: ClassHash::default(),
-        })),
-        Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass {
-            class_hash: ClassHash::default(),
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass {
+                class_hash: ClassHash::default(),
+            })),
+            Some(StateDiffChunk::DeprecatedDeclaredClass(DeprecatedDeclaredClass {
+                class_hash: ClassHash::default(),
+            })),
+        ],
+    )
     .await;
-    validate_state_diff_fails(vec![2], vec![
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            nonce: Some(Nonce::default()),
-            ..Default::default()
-        })),
-        Some(StateDiffChunk::ContractDiff(ContractDiff {
-            contract_address: ContractAddress::default(),
-            nonce: Some(Nonce::default()),
-            ..Default::default()
-        })),
-    ])
+    validate_state_diff_fails(
+        vec![2],
+        vec![
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                nonce: Some(Nonce::default()),
+                ..Default::default()
+            })),
+            Some(StateDiffChunk::ContractDiff(ContractDiff {
+                contract_address: ContractAddress::default(),
+                nonce: Some(Nonce::default()),
+                ..Default::default()
+            })),
+        ],
+    )
     .await;
 }
 

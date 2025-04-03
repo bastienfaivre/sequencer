@@ -4,7 +4,7 @@ use mempool_test_utils::starknet_api_test_utils::MultiAccountTransactionGenerato
 use tokio::fs::rename;
 use tracing::info;
 
-use crate::sequencer_manager::{NodeSetup, get_sequencer_setup_configs};
+use crate::sequencer_manager::{get_sequencer_setup_configs, NodeSetup};
 
 pub async fn node_setup(
     tx_generator: &mut MultiAccountTransactionGenerator,

@@ -1,15 +1,17 @@
 //! Stream handler, see StreamManager struct.
 
 use std::cmp::Ordering;
-use std::collections::HashMap;
 use std::collections::hash_map::Entry::{Occupied, Vacant};
+use std::collections::HashMap;
 use std::fmt::{Debug, Display};
 use std::hash::Hash;
 
-use futures::StreamExt;
 use futures::channel::mpsc;
+use futures::StreamExt;
 use papyrus_network::network_manager::{
-    BroadcastTopicClient, BroadcastTopicClientTrait, BroadcastTopicServer,
+    BroadcastTopicClient,
+    BroadcastTopicClientTrait,
+    BroadcastTopicServer,
 };
 use papyrus_network::utils::StreamHashMap;
 use papyrus_network_types::network_types::{BroadcastedMessageMetadata, OpaquePeerId};

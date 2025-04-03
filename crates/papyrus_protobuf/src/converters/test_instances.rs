@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use papyrus_test_utils::{GetTestInstance, auto_impl_get_test_instance, get_number_of_variants};
+use papyrus_test_utils::{auto_impl_get_test_instance, get_number_of_variants, GetTestInstance};
 use prost::DecodeError;
 use rand::Rng;
 use starknet_api::block::{BlockHash, BlockNumber};
@@ -10,8 +10,15 @@ use starknet_api::data_availability::L1DataAvailabilityMode;
 
 use super::ProtobufConversionError;
 use crate::consensus::{
-    BlockInfo, ProposalFin, ProposalInit, ProposalPart, StreamMessage, StreamMessageBody,
-    TransactionBatch, Vote, VoteType,
+    BlockInfo,
+    ProposalFin,
+    ProposalInit,
+    ProposalPart,
+    StreamMessage,
+    StreamMessageBody,
+    TransactionBatch,
+    Vote,
+    VoteType,
 };
 
 auto_impl_get_test_instance! {

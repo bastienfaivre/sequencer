@@ -5,9 +5,9 @@ use std::net::{IpAddr, Ipv4Addr};
 
 use assert_matches::assert_matches;
 use colored::Colorize;
-use papyrus_config::SerializedParam;
 use papyrus_config::dumping::SerializeConfig;
 use papyrus_config::validators::config_validate;
+use papyrus_config::SerializedParam;
 use rstest::rstest;
 use starknet_api::test_utils::json_utils::assert_json_eq;
 use starknet_batcher::block_builder::BlockBuilderConfig;
@@ -17,12 +17,16 @@ use starknet_sequencer_infra::component_definitions::{LocalServerConfig, RemoteC
 use validator::Validate;
 
 use crate::config::component_execution_config::{
-    ReactiveComponentExecutionConfig, ReactiveComponentExecutionMode,
+    ReactiveComponentExecutionConfig,
+    ReactiveComponentExecutionMode,
 };
-use crate::config::config_utils::{RequiredParams, create_test_config_load_args};
+use crate::config::config_utils::{create_test_config_load_args, RequiredParams};
 use crate::config::node_config::{
-    CONFIG_NON_POINTERS_WHITELIST, CONFIG_POINTERS, DEFAULT_CONFIG_PATH,
-    DEFAULT_PRESET_CONFIG_PATH, SequencerNodeConfig,
+    SequencerNodeConfig,
+    CONFIG_NON_POINTERS_WHITELIST,
+    CONFIG_POINTERS,
+    DEFAULT_CONFIG_PATH,
+    DEFAULT_PRESET_CONFIG_PATH,
 };
 
 const LOCAL_EXECUTION_MODE: ReactiveComponentExecutionMode =

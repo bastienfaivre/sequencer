@@ -15,7 +15,7 @@ use starknet_types_core::felt::Felt;
 use tracing_test::traced_test;
 
 use crate::config::HttpServerConfig;
-use crate::http_server::{CLIENT_REGION_HEADER, add_tx_result_as_json};
+use crate::http_server::{add_tx_result_as_json, CLIENT_REGION_HEADER};
 use crate::test_utils::http_client_server_setup;
 
 #[tokio::test]

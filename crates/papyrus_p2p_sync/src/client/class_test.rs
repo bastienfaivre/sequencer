@@ -4,24 +4,36 @@ use futures::FutureExt;
 use mockall::predicate::eq;
 use papyrus_common::pending_classes::ApiContractClass;
 use papyrus_protobuf::sync::{
-    BlockHashOrNumber, DataOrFin, DeclaredClass, DeprecatedDeclaredClass, Direction, Query,
+    BlockHashOrNumber,
+    DataOrFin,
+    DeclaredClass,
+    DeprecatedDeclaredClass,
+    Direction,
+    Query,
     StateDiffChunk,
 };
 use papyrus_storage::class_manager::ClassManagerStorageReader;
-use papyrus_test_utils::{GetTestInstance, get_rng};
+use papyrus_test_utils::{get_rng, GetTestInstance};
 use rand::{Rng, RngCore};
 use rand_chacha::ChaCha8Rng;
 use starknet_api::block::BlockNumber;
 use starknet_api::core::{ClassHash, CompiledClassHash, EntryPointSelector};
 use starknet_api::deprecated_contract_class::{
-    ContractClass as DeprecatedContractClass, EntryPointOffset, EntryPointV0,
+    ContractClass as DeprecatedContractClass,
+    EntryPointOffset,
+    EntryPointV0,
 };
 use starknet_api::state::SierraContractClass;
 use starknet_class_manager_types::{ClassHashes, MockClassManagerClient};
 
 use super::test_utils::{
-    Action, DataType, SLEEP_DURATION_TO_LET_SYNC_ADVANCE, TIMEOUT_FOR_TEST, random_header,
-    run_test, wait_for_marker,
+    random_header,
+    run_test,
+    wait_for_marker,
+    Action,
+    DataType,
+    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+    TIMEOUT_FOR_TEST,
 };
 
 #[tokio::test]
@@ -119,12 +131,15 @@ async fn class_basic_flow() {
 
     actions.push(Action::ReceiveQuery(
         Box::new(move |query| {
-            assert_eq!(query, Query {
-                start_block: BlockHashOrNumber::Number(BlockNumber(0)),
-                direction: Direction::Forward,
-                limit: len.try_into().unwrap(),
-                step: 1,
-            })
+            assert_eq!(
+                query,
+                Query {
+                    start_block: BlockHashOrNumber::Number(BlockNumber(0)),
+                    direction: Direction::Forward,
+                    limit: len.try_into().unwrap(),
+                    step: 1,
+                }
+            )
         }),
         DataType::Class,
     ));
@@ -224,12 +239,13 @@ fn create_random_state_diff_chunk_with_class(
         // DeprecatedContractClass::get_test_instance(rng) currently returns the same value every
         // time, so we change the entry points to be random.
         let mut deprecated_contract_class = DeprecatedContractClass::get_test_instance(rng);
-        deprecated_contract_class.entry_points_by_type.insert(Default::default(), vec![
-            EntryPointV0 {
+        deprecated_contract_class.entry_points_by_type.insert(
+            Default::default(),
+            vec![EntryPointV0 {
                 selector: EntryPointSelector::default(),
                 offset: EntryPointOffset(rng.next_u64().try_into().unwrap()),
-            },
-        ]);
+            }],
+        );
 
         (
             StateDiffChunk::DeprecatedDeclaredClass(deprecated_declared_class),

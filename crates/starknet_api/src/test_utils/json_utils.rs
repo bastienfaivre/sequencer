@@ -1,6 +1,6 @@
 //! Utils for config test.
 
-use assert_json_diff::{CompareMode, Config, assert_json_matches_no_panic};
+use assert_json_diff::{assert_json_matches_no_panic, CompareMode, Config};
 use serde::Serialize;
 
 /// Compare two JSON values for an exact match.

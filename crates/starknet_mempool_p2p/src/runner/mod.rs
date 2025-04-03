@@ -2,11 +2,14 @@
 mod test;
 
 use async_trait::async_trait;
-use futures::StreamExt;
 use futures::future::BoxFuture;
 use futures::stream::FuturesUnordered;
+use futures::StreamExt;
 use papyrus_network::network_manager::{
-    BroadcastTopicClient, BroadcastTopicClientTrait, BroadcastTopicServer, NetworkError,
+    BroadcastTopicClient,
+    BroadcastTopicClientTrait,
+    BroadcastTopicServer,
+    NetworkError,
 };
 use papyrus_protobuf::mempool::RpcTransactionWrapper;
 use starknet_gateway_types::communication::{GatewayClientError, SharedGatewayClient};

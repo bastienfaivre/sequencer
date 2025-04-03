@@ -9,18 +9,23 @@ use std::fs::File;
 use std::ops::IndexMut;
 use std::path::PathBuf;
 
-use clap::Command;
 use clap::parser::Values;
+use clap::Command;
 use command::{get_command_matches, update_config_map_by_command_args};
 use itertools::any;
 use serde::Deserialize;
-use serde_json::{Map, Value, json, to_string_pretty};
+use serde_json::{json, to_string_pretty, Map, Value};
 use tracing::{info, instrument};
 
 use crate::validators::validate_path_exists;
 use crate::{
-    ConfigError, IS_NONE_MARK, ParamPath, SerializationType, SerializedContent, SerializedParam,
     command,
+    ConfigError,
+    ParamPath,
+    SerializationType,
+    SerializedContent,
+    SerializedParam,
+    IS_NONE_MARK,
 };
 
 /// Deserializes config from flatten JSON.
@@ -199,7 +204,6 @@ pub(crate) fn update_config_map(
         SerializationType::NegativeInteger => new_value.is_number(),
         SerializationType::PositiveInteger => new_value.is_number(),
         SerializationType::String => new_value.is_string(),
-        SerializationType::Array => new_value.is_array(),
     };
     if !is_type_matched {
         return Err(ConfigError::ChangeRequiredParamType {

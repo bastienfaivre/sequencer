@@ -17,7 +17,7 @@ use crate::execution::entry_point::CallEntryPoint;
 use crate::execution::errors::EntryPointExecutionError;
 use crate::execution::syscalls::hint_processor::EmitEventError;
 use crate::test_utils::initial_test_state::test_state;
-use crate::test_utils::{BALANCE, trivial_external_entry_point_new};
+use crate::test_utils::{trivial_external_entry_point_new, BALANCE};
 
 const KEYS: [Felt; 2] = [Felt::from_hex_unchecked("0x2019"), Felt::from_hex_unchecked("0x2020")];
 const DATA: [Felt; 3] = [
@@ -38,11 +38,14 @@ fn positive_flow(runnable_version: RunnableCairo1) {
         data: EventData(DATA.to_vec()),
     };
 
-    assert_eq!(call_info.execution, CallExecution {
-        events: vec![OrderedEvent { order: 0, event }],
-        gas_consumed: 41880,
-        ..Default::default()
-    });
+    assert_eq!(
+        call_info.execution,
+        CallExecution {
+            events: vec![OrderedEvent { order: 0, event }],
+            gas_consumed: 41880,
+            ..Default::default()
+        }
+    );
 }
 
 #[cfg_attr(feature = "cairo_native", test_case(RunnableCairo1::Native;"Native"))]

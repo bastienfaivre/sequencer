@@ -1,19 +1,21 @@
 use std::sync::Arc;
 
 use blockifier::execution::contract_class::{
-    CompiledClassV0, CompiledClassV1, RunnableCompiledClass,
+    CompiledClassV0,
+    CompiledClassV1,
+    RunnableCompiledClass,
 };
 use blockifier::state::contract_class_manager::ContractClassManager;
-use blockifier::state::errors::{StateError, couple_casm_and_sierra};
+use blockifier::state::errors::{couple_casm_and_sierra, StateError};
 use blockifier::state::global_cache::CachedClass;
 use blockifier::state::state_api::{StateReader, StateResult};
 use cairo_lang_starknet_classes::casm_contract_class::CasmContractClass;
 use futures::executor::block_on;
 use log;
-use papyrus_storage::StorageReader;
 use papyrus_storage::compiled_class::CasmStorageReader;
 use papyrus_storage::db::RO;
 use papyrus_storage::state::StateStorageReader;
+use papyrus_storage::StorageReader;
 use starknet_api::block::BlockNumber;
 use starknet_api::contract_class::{ContractClass, SierraVersion};
 use starknet_api::core::{ClassHash, CompiledClassHash, ContractAddress, Nonce};

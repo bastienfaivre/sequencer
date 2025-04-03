@@ -5,7 +5,9 @@ use std::path::PathBuf;
 
 use blockifier::abi::constants;
 use blockifier::blockifier::config::{
-    CairoNativeRunConfig, ConcurrencyConfig, ContractClassManagerConfig,
+    CairoNativeRunConfig,
+    ConcurrencyConfig,
+    ContractClassManagerConfig,
 };
 use blockifier::blockifier_versioned_constants::VersionedConstantsOverrides;
 use blockifier::bouncer::{BouncerConfig, BouncerWeights, BuiltinCount, HashMapWrapper};
@@ -18,7 +20,9 @@ use starknet_api::execution_resources::GasAmount;
 use starknet_sierra_multicompile::config::SierraCompilationConfig;
 
 use crate::errors::{
-    InvalidNativeBlockifierInputError, NativeBlockifierError, NativeBlockifierInputError,
+    InvalidNativeBlockifierInputError,
+    NativeBlockifierError,
+    NativeBlockifierInputError,
     NativeBlockifierResult,
 };
 

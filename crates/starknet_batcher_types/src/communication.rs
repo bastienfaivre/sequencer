@@ -6,18 +6,30 @@ use mockall::automock;
 use papyrus_proc_macros::handle_all_response_variants;
 use serde::{Deserialize, Serialize};
 use starknet_sequencer_infra::component_client::{
-    ClientError, LocalComponentClient, RemoteComponentClient,
+    ClientError,
+    LocalComponentClient,
+    RemoteComponentClient,
 };
 use starknet_sequencer_infra::component_definitions::{
-    ComponentClient, ComponentRequestAndResponseSender,
+    ComponentClient,
+    ComponentRequestAndResponseSender,
 };
 use starknet_state_sync_types::state_sync_types::SyncBlock;
 use thiserror::Error;
 
 use crate::batcher_types::{
-    BatcherResult, DecisionReachedInput, DecisionReachedResponse, GetHeightResponse,
-    GetProposalContentInput, GetProposalContentResponse, ProposeBlockInput, RevertBlockInput,
-    SendProposalContentInput, SendProposalContentResponse, StartHeightInput, ValidateBlockInput,
+    BatcherResult,
+    DecisionReachedInput,
+    DecisionReachedResponse,
+    GetHeightResponse,
+    GetProposalContentInput,
+    GetProposalContentResponse,
+    ProposeBlockInput,
+    RevertBlockInput,
+    SendProposalContentInput,
+    SendProposalContentResponse,
+    StartHeightInput,
+    ValidateBlockInput,
 };
 use crate::errors::BatcherError;
 

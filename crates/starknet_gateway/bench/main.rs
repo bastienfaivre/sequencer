@@ -12,7 +12,7 @@
 // import the Gateway test utilities.
 mod utils;
 
-use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 use utils::{BenchTestSetup, BenchTestSetupConfig};
 
 fn invoke_benchmark(criterion: &mut Criterion) {

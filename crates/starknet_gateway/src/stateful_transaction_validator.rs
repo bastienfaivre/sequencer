@@ -1,5 +1,6 @@
 use blockifier::blockifier::stateful_validator::{
-    StatefulValidator, StatefulValidatorResult as BlockifierStatefulValidatorResult,
+    StatefulValidator,
+    StatefulValidatorResult as BlockifierStatefulValidatorResult,
 };
 use blockifier::blockifier_versioned_constants::VersionedConstants;
 use blockifier::bouncer::BouncerConfig;
@@ -13,7 +14,8 @@ use mockall::automock;
 use starknet_api::block::BlockInfo;
 use starknet_api::core::Nonce;
 use starknet_api::executable_transaction::{
-    AccountTransaction as ExecutableTransaction, InvokeTransaction as ExecutableInvokeTransaction,
+    AccountTransaction as ExecutableTransaction,
+    InvokeTransaction as ExecutableInvokeTransaction,
 };
 use starknet_gateway_types::errors::GatewaySpecError;
 use starknet_mempool_types::communication::SharedMempoolClient;

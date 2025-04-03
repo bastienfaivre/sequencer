@@ -2,7 +2,12 @@ use std::collections::HashSet;
 use std::sync::LazyLock;
 
 use crate::toml_utils::{
-    CrateCargoToml, DependencyValue, LocalCrate, MEMBER_TOMLS, PackageEntryValue, ROOT_TOML,
+    CrateCargoToml,
+    DependencyValue,
+    LocalCrate,
+    PackageEntryValue,
+    MEMBER_TOMLS,
+    ROOT_TOML,
 };
 
 const PARENT_BRANCH: &str = include_str!("../scripts/parent_branch.txt");

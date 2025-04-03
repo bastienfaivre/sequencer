@@ -8,9 +8,9 @@ use blockifier::transaction::objects::TransactionExecutionInfo;
 use indexmap::IndexMap;
 use starknet_api::consensus_transaction::InternalConsensusTransaction;
 use starknet_api::execution_resources::GasAmount;
-use starknet_api::test_utils::invoke::{InvokeTxArgs, internal_invoke_tx};
-use starknet_api::transaction::TransactionHash;
+use starknet_api::test_utils::invoke::{internal_invoke_tx, InvokeTxArgs};
 use starknet_api::transaction::fields::Fee;
+use starknet_api::transaction::TransactionHash;
 use starknet_api::{class_hash, contract_address, nonce, tx_hash};
 use tokio::sync::mpsc::UnboundedSender;
 
@@ -81,13 +81,16 @@ fn indexed_execution_infos() -> IndexMap<TransactionHash, TransactionExecutionIn
         .iter()
         .enumerate()
         .map(|(i, tx)| {
-            (tx.tx_hash(), TransactionExecutionInfo {
-                receipt: TransactionReceipt {
-                    fee: Fee(i.try_into().unwrap()),
+            (
+                tx.tx_hash(),
+                TransactionExecutionInfo {
+                    receipt: TransactionReceipt {
+                        fee: Fee(i.try_into().unwrap()),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 },
-                ..Default::default()
-            })
+            )
         })
         .collect()
 }

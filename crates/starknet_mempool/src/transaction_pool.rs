@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap, hash_map};
+use std::collections::{hash_map, BTreeMap, HashMap};
 use std::time::{Duration, Instant};
 
 use starknet_api::core::{ContractAddress, Nonce};

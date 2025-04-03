@@ -3,14 +3,14 @@ use std::future::Future;
 
 use futures::future::pending;
 use futures::never::Never;
-use papyrus_config::dumping::{SerializeConfig, ser_param};
+use papyrus_config::dumping::{ser_param, SerializeConfig};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
-use papyrus_storage::StorageWriter;
 use papyrus_storage::base_layer::BaseLayerStorageWriter;
 use papyrus_storage::body::BodyStorageWriter;
 use papyrus_storage::class_manager::ClassManagerStorageWriter;
 use papyrus_storage::header::HeaderStorageWriter;
 use papyrus_storage::state::StateStorageWriter;
+use papyrus_storage::StorageWriter;
 use serde::{Deserialize, Serialize};
 use starknet_api::block::BlockNumber;
 use tracing::info;

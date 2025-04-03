@@ -1,7 +1,12 @@
 use starknet_api::block::BlockNumber;
 use starknet_sequencer_metrics::metric_definitions::{
-    BATCHED_TRANSACTIONS, PROPOSAL_ABORTED, PROPOSAL_FAILED, PROPOSAL_STARTED, PROPOSAL_SUCCEEDED,
-    REJECTED_TRANSACTIONS, STORAGE_HEIGHT,
+    BATCHED_TRANSACTIONS,
+    PROPOSAL_ABORTED,
+    PROPOSAL_FAILED,
+    PROPOSAL_STARTED,
+    PROPOSAL_SUCCEEDED,
+    REJECTED_TRANSACTIONS,
+    STORAGE_HEIGHT,
 };
 
 pub fn register_metrics(storage_height: BlockNumber) {

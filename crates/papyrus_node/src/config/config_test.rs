@@ -15,7 +15,7 @@ use papyrus_config::presentation::get_config_presentation;
 use papyrus_config::{SerializationType, SerializedContent, SerializedParam};
 use papyrus_monitoring_gateway::MonitoringGatewayConfig;
 use pretty_assertions::assert_eq;
-use serde_json::{Map, Value, json};
+use serde_json::{json, Map, Value};
 use starknet_api::core::ChainId;
 use starknet_api::test_utils::json_utils::assert_json_eq;
 use starknet_infra_utils::path::resolve_project_relative_path;
@@ -24,7 +24,7 @@ use validator::Validate;
 
 #[cfg(feature = "rpc")]
 use crate::config::pointers::{CONFIG_NON_POINTERS_WHITELIST, CONFIG_POINTERS};
-use crate::config::{DEFAULT_CONFIG_PATH, NodeConfig, node_command};
+use crate::config::{node_command, NodeConfig, DEFAULT_CONFIG_PATH};
 
 // Returns the required and generated params in config/papyrus/default_config.json with the default
 // value from the config presentation.

@@ -9,17 +9,23 @@ use starknet_consensus_manager::communication::ConsensusManagerServer;
 use starknet_gateway::communication::{LocalGatewayServer, RemoteGatewayServer};
 use starknet_http_server::communication::HttpServer;
 use starknet_l1_provider::communication::{
-    L1ScraperServer, LocalL1ProviderServer, RemoteL1ProviderServer,
+    L1ScraperServer,
+    LocalL1ProviderServer,
+    RemoteL1ProviderServer,
 };
 use starknet_mempool::communication::{LocalMempoolServer, RemoteMempoolServer};
 use starknet_mempool_p2p::propagator::{
-    LocalMempoolP2pPropagatorServer, RemoteMempoolP2pPropagatorServer,
+    LocalMempoolP2pPropagatorServer,
+    RemoteMempoolP2pPropagatorServer,
 };
 use starknet_mempool_p2p::runner::MempoolP2pRunnerServer;
 use starknet_monitoring_endpoint::communication::MonitoringEndpointServer;
 use starknet_sequencer_infra::component_server::{
-    ComponentServerStarter, ConcurrentLocalComponentServer, LocalComponentServer,
-    RemoteComponentServer, WrapperServer,
+    ComponentServerStarter,
+    ConcurrentLocalComponentServer,
+    LocalComponentServer,
+    RemoteComponentServer,
+    WrapperServer,
 };
 use starknet_sequencer_infra::errors::ComponentServerError;
 use starknet_sierra_multicompile::communication::LocalSierraCompilerServer;
@@ -32,7 +38,8 @@ use crate::clients::SequencerNodeClients;
 use crate::communication::SequencerNodeCommunication;
 use crate::components::SequencerNodeComponents;
 use crate::config::component_execution_config::{
-    ActiveComponentExecutionMode, ReactiveComponentExecutionMode,
+    ActiveComponentExecutionMode,
+    ReactiveComponentExecutionMode,
 };
 use crate::config::node_config::SequencerNodeConfig;
 

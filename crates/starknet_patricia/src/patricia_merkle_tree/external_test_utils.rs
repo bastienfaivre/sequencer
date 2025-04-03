@@ -4,7 +4,7 @@ use ethnum::U256;
 use rand::Rng;
 use serde_json::json;
 use starknet_patricia_storage::map_storage::MapStorage;
-use starknet_patricia_storage::storage_trait::{DbKey, DbValue, create_db_key};
+use starknet_patricia_storage::storage_trait::{create_db_key, DbKey, DbValue};
 
 use super::filled_tree::node_serde::PatriciaPrefix;
 use super::filled_tree::tree::{FilledTree, FilledTreeImpl};
@@ -91,10 +91,13 @@ where
         &leaf_modifications
             .iter()
             .map(|(index, data)| {
-                (*index, match data.is_empty() {
-                    true => SkeletonLeaf::Zero,
-                    false => SkeletonLeaf::NonZero,
-                })
+                (
+                    *index,
+                    match data.is_empty() {
+                        true => SkeletonLeaf::Zero,
+                        false => SkeletonLeaf::NonZero,
+                    },
+                )
             })
             .collect(),
     )

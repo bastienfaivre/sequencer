@@ -9,8 +9,13 @@ use starknet_api::block::{BlockBody, BlockNumber};
 use starknet_api::transaction::{FullTransaction, TransactionHash};
 
 use super::test_utils::{
-    Action, DataType, SLEEP_DURATION_TO_LET_SYNC_ADVANCE, TIMEOUT_FOR_TEST, random_header,
-    run_test, wait_for_marker,
+    random_header,
+    run_test,
+    wait_for_marker,
+    Action,
+    DataType,
+    SLEEP_DURATION_TO_LET_SYNC_ADVANCE,
+    TIMEOUT_FOR_TEST,
 };
 
 #[tokio::test]
@@ -81,12 +86,15 @@ async fn transaction_basic_flow() {
             let limit = min(TRANSACTION_QUERY_LENGTH, NUM_BLOCKS - i);
             actions.push(Action::ReceiveQuery(
                 Box::new(move |query| {
-                    assert_eq!(query, Query {
-                        start_block: BlockHashOrNumber::Number(BlockNumber(i)),
-                        direction: Direction::Forward,
-                        limit,
-                        step: 1,
-                    })
+                    assert_eq!(
+                        query,
+                        Query {
+                            start_block: BlockHashOrNumber::Number(BlockNumber(i)),
+                            direction: Direction::Forward,
+                            limit,
+                            step: 1,
+                        }
+                    )
                 }),
                 DataType::Transaction,
             ));

@@ -4,7 +4,10 @@ use std::io::Write;
 use std::path::PathBuf;
 
 use papyrus_config::dumping::{
-    SerializeConfig, append_sub_config_name, combine_config_map_and_pointers, ser_param,
+    append_sub_config_name,
+    combine_config_map_and_pointers,
+    ser_param,
+    SerializeConfig,
 };
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_protobuf::consensus::DEFAULT_VALIDATOR_ID;

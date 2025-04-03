@@ -7,19 +7,20 @@ use papyrus_network_types::network_types::BroadcastedMessageMetadata;
 use starknet_api::executable_transaction::AccountTransaction;
 use starknet_api::rpc_transaction::RpcTransaction;
 use starknet_api::transaction::TransactionHash;
-use starknet_class_manager_types::SharedClassManagerClient;
 use starknet_class_manager_types::transaction_converter::{
-    TransactionConverter, TransactionConverterTrait,
+    TransactionConverter,
+    TransactionConverterTrait,
 };
+use starknet_class_manager_types::SharedClassManagerClient;
 use starknet_gateway_types::errors::GatewaySpecError;
 use starknet_mempool_types::communication::{AddTransactionArgsWrapper, SharedMempoolClient};
 use starknet_mempool_types::mempool_types::{AccountState, AddTransactionArgs};
 use starknet_sequencer_infra::component_definitions::ComponentStarter;
 use starknet_state_sync_types::communication::SharedStateSyncClient;
-use tracing::{Span, debug, error, instrument, warn};
+use tracing::{debug, error, instrument, warn, Span};
 
 use crate::config::GatewayConfig;
-use crate::errors::{GatewayResult, mempool_client_result_to_gw_spec_result};
+use crate::errors::{mempool_client_result_to_gw_spec_result, GatewayResult};
 use crate::state_reader::StateReaderFactory;
 use crate::stateful_transaction_validator::StatefulTransactionValidator;
 use crate::stateless_transaction_validator::StatelessTransactionValidator;

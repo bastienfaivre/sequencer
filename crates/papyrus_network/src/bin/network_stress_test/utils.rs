@@ -3,9 +3,9 @@ use std::str::FromStr;
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::vec;
 
-use libp2p::Multiaddr;
 use libp2p::identity::Keypair;
-use papyrus_config::dumping::{SerializeConfig, append_sub_config_name, ser_param};
+use libp2p::Multiaddr;
+use papyrus_config::dumping::{append_sub_config_name, ser_param, SerializeConfig};
 use papyrus_config::{ParamPath, ParamPrivacyInput, SerializedParam};
 use papyrus_network::NetworkConfig;
 use serde::{Deserialize, Serialize, Serializer};

@@ -1,12 +1,16 @@
 use std::path::PathBuf;
 
-use papyrus_config::dumping::{SerializeConfig, combine_config_map_and_pointers};
+use papyrus_config::dumping::{combine_config_map_and_pointers, SerializeConfig};
 use serde_json::Value;
 use starknet_sequencer_node::config::config_utils::{
-    RequiredParams, config_to_preset, dump_json_data,
+    config_to_preset,
+    dump_json_data,
+    RequiredParams,
 };
 use starknet_sequencer_node::config::node_config::{
-    CONFIG_NON_POINTERS_WHITELIST, CONFIG_POINTERS, SequencerNodeConfig,
+    SequencerNodeConfig,
+    CONFIG_NON_POINTERS_WHITELIST,
+    CONFIG_POINTERS,
 };
 
 // TODO(Tsabary): Move here all config-related functions from "integration_test_utils.rs".

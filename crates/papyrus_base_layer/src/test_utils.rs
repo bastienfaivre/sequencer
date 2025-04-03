@@ -7,7 +7,7 @@ use colored::*;
 use ethers::utils::{Ganache, GanacheInstance};
 use starknet_api::hash::StarkHash;
 use tar::Archive;
-use tempfile::{TempDir, tempdir};
+use tempfile::{tempdir, TempDir};
 
 type TestEthereumNodeHandle = (GanacheInstance, TempDir);
 

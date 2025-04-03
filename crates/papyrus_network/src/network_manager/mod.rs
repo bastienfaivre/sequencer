@@ -13,14 +13,14 @@ use std::task::{Context, Poll};
 use async_trait::async_trait;
 use futures::channel::mpsc::{Receiver, SendError, Sender};
 use futures::channel::oneshot;
-use futures::future::{BoxFuture, Ready, ready};
+use futures::future::{ready, BoxFuture, Ready};
 use futures::sink::With;
 use futures::stream::{FuturesUnordered, Map, Stream};
-use futures::{FutureExt, Sink, SinkExt, StreamExt, pin_mut};
+use futures::{pin_mut, FutureExt, Sink, SinkExt, StreamExt};
 use libp2p::gossipsub::{SubscriptionError, TopicHash};
 use libp2p::identity::Keypair;
 use libp2p::swarm::SwarmEvent;
-use libp2p::{Multiaddr, PeerId, StreamProtocol, Swarm, SwarmBuilder, noise, yamux};
+use libp2p::{noise, yamux, Multiaddr, PeerId, StreamProtocol, Swarm, SwarmBuilder};
 use metrics::NetworkMetrics;
 use papyrus_network_types::network_types::{BroadcastedMessageMetadata, OpaquePeerId};
 use sqmr::Bytes;
@@ -31,8 +31,8 @@ use crate::gossipsub_impl::Topic;
 use crate::mixed_behaviour::{self, BridgedBehaviour};
 use crate::sqmr::behaviour::SessionError;
 use crate::sqmr::{self, InboundSessionId, OutboundSessionId, SessionId};
-use crate::utils::{StreamHashMap, is_localhost};
-use crate::{NetworkConfig, gossipsub_impl};
+use crate::utils::{is_localhost, StreamHashMap};
+use crate::{gossipsub_impl, NetworkConfig};
 
 #[derive(thiserror::Error, Debug)]
 pub enum NetworkError {

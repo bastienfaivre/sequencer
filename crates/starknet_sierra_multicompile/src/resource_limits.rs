@@ -3,7 +3,7 @@ use std::io;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
 
-use rlimit::{Resource, setrlimit};
+use rlimit::{setrlimit, Resource};
 
 #[cfg(test)]
 #[path = "resource_limits_test.rs"]
